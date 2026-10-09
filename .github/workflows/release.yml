@@ -1,0 +1,50 @@
+# Releases a package with trusted publishing, no token stored anywhere (npm trusts this workflow of this repository): a
+# tag `<package>-v<version>` (`home`, `sdk`, `react`, `cli`, `mcp`) builds `packages/<package>` and stages it on npm,
+# with provenance, from the `npm` environment: it goes live only once a maintainer approves it with 2FA (npmjs.com,
+# Staged Packages). The tag must name the package's own version. Tags are pushed by the owner only.
+name: release
+
+on:
+  push:
+    tags: ['home-v*', 'sdk-v*', 'react-v*', 'cli-v*', 'mcp-v*']
+
+permissions:
+  contents: read
+
+jobs:
+  npm:
+    name: npm
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # trusted publishing needs npm 11.5.1 or later, staged publishing 11.15
+      - run: npm install --global npm@11.19.1
+      - run: pnpm install --frozen-lockfile
+      - name: The tag names the package and its version
+        id: package
+        run: |
+          folder="packages/${GITHUB_REF_NAME%-v*}"
+          version=$(node -p "require('./$folder/package.json').version")
+          test "${folder#packages/}-v$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME, $folder at $version"; exit 1; }
+          echo "folder=$folder" >> "$GITHUB_OUTPUT"
+      - run: pnpm --filter "./${{ steps.package.outputs.folder }}..." build
+      # pnpm packs it as published: `publishConfig`'s exports, `workspace:` turned into versions
+      - run: pnpm pack --pack-destination "$RUNNER_TEMP"
+        working-directory: ${{ steps.package.outputs.folder }}
+      # staged, not live: the owner approves it on npmjs.com
+      - name: Staged on npm
+        run: |
+          mkdir "$RUNNER_TEMP/package"
+          tar -xzf "$RUNNER_TEMP"/*.tgz -C "$RUNNER_TEMP/package" --strip-components 1
+          cd "$RUNNER_TEMP/package"
+          npm stage publish --access public

@@ -1,0 +1,57 @@
+{
+  "name": "@blupinta/mcp",
+  "version": "0.1.0",
+  "description": "An MCP server for Blupinta's public API: an AI agent reads a home and its versions, checks one, saves one",
+  "license": "Apache-2.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blupinta/blupinta-js.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://docs.blupinta.app/reference/libraries/",
+  "keywords": [
+    "blupinta",
+    "mcp",
+    "model context protocol",
+    "ai",
+    "home"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "blupinta-mcp": "./dist/main.js"
+  },
+  "exports": {
+    "./server": "./src/server.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "exports": {
+      "./server": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@blupinta/cli": "workspace:^",
+    "@blupinta/sdk": "workspace:^",
+    "@modelcontextprotocol/sdk": "1.30.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsdown": "0.22.14",
+    "typescript": "^5.9.3"
+  }
+}

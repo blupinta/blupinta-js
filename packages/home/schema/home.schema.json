@@ -1,0 +1,3359 @@
+{
+  "$id": "https://blupinta.app/schema/home-6.json",
+  "title": "Blupinta home, version 6",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/HomeModel",
+  "definitions": {
+    "HomeModel": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "number",
+          "const": 6,
+          "description": "version of this shape: a file of another version is migrated by a script, never guessed"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string",
+          "description": "where it is, as its author writes it"
+        },
+        "site": {
+          "$ref": "#/definitions/Site"
+        },
+        "sheets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Sheet"
+          }
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Level"
+          }
+        },
+        "areas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Area"
+          }
+        },
+        "plans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Plan"
+          }
+        },
+        "presentations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Presentation"
+          },
+          "description": "the first one is shown when nothing else is chosen"
+        },
+        "openingTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OpeningType"
+          },
+          "description": "the house's kinds of windows and doors, defined once and placed already configured (§8b)"
+        },
+        "floors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FloorDefinition"
+          },
+          "description": "floors made by the person (redesign.md §8): this home's own, and a copy of each of their kits it uses"
+        },
+        "wallTiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WallTileDefinition"
+          },
+          "description": "wall tiles made by the person (redesign.md §8f): this home's own, and a copy of each of their kits it uses"
+        },
+        "settings": {
+          "$ref": "#/definitions/HouseSettings",
+          "description": "what the house's author set once and the tools start from (§8c)"
+        },
+        "setup": {
+          "$ref": "#/definitions/HomeSetup",
+          "description": "the new home's guided setup; absent for a home that never had one"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProductManifest"
+          },
+          "description": "the project's copy of every catalog product its items use (furnishing.md §6, stage 2): the home renders whatever happens to the catalog"
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InventoryItem"
+          },
+          "description": "everything in the house from the catalog, placed or not (furnishing.md §4–5)"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PieceGroup"
+          },
+          "description": "pieces selected and moved as one (furnishing.md §8)"
+        },
+        "sets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PieceSet"
+          },
+          "description": "groups of pieces saved to be placed again (furnishing.md §2)"
+        }
+      },
+      "required": ["schema", "id", "name", "site", "sheets", "levels", "areas", "plans", "presentations"],
+      "additionalProperties": false
+    },
+    "Site": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        },
+        "north": {
+          "type": "number",
+          "description": "degrees clockwise from the sheets' \"up\" to true north (0 = drawn north up)"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["lat", "lng", "north"],
+      "additionalProperties": false,
+      "description": "Where the home stands: drives the sun's path"
+    },
+    "Sheet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "pxPerM": {
+          "type": "number",
+          "description": "sheet units per metre: 100 for new sheets (units are cm)"
+        },
+        "image": {
+          "$ref": "#/definitions/SheetImage",
+          "description": "the drawing laid on the sheet; absent for a plan drawn from measurements only"
+        },
+        "scale": {
+          "type": "string",
+          "description": "scale written on the drawing, e.g. \"1:200\""
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "pxPerM"],
+      "additionalProperties": false,
+      "description": "A drawing's frame of coordinates and its scale; it knows nothing about floors"
+    },
+    "SheetImage": {
+      "type": "object",
+      "properties": {
+        "src": {
+          "type": "string",
+          "description": "the file, by its name in the project"
+        },
+        "width": {
+          "type": "number",
+          "description": "size in image pixels"
+        },
+        "height": {
+          "type": "number"
+        },
+        "place": {
+          "type": "object",
+          "properties": {
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "scale": {
+              "type": "number"
+            },
+            "rotation": {
+              "type": "number"
+            }
+          },
+          "required": ["at", "scale", "rotation"],
+          "additionalProperties": false,
+          "description": "where the image lies on the sheet: its top-left corner at `at`, `scale` sheet units per image pixel, turned by `rotation` degrees clockwise about `at`. Calibrating or straightening moves the image, never the walls."
+        },
+        "crop": {
+          "$ref": "#/definitions/ImageCrop",
+          "description": "the part of the image shown, in image pixels; the whole image when absent"
+        },
+        "scaledBy": {
+          "$ref": "#/definitions/ImageScaling",
+          "description": "how the drawing was put to scale, so what is traced on it measures true; absent: never, it lies at the size it was imported at (a guess) and the editor says so"
+        }
+      },
+      "required": ["src", "width", "height", "place"],
+      "additionalProperties": false
+    },
+    "Pt": {
+      "type": "array",
+      "minItems": 2,
+      "items": [
+        {
+          "type": "number",
+          "title": "x"
+        },
+        {
+          "type": "number",
+          "title": "y"
+        }
+      ],
+      "maxItems": 2
+    },
+    "ImageCrop": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        }
+      },
+      "required": ["x", "y", "width", "height"],
+      "additionalProperties": false,
+      "description": "A rectangle of an image, in its pixels from its top-left corner"
+    },
+    "ImageScaling": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "measure"
+            },
+            "metres": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "metres"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "written"
+            },
+            "ratio": {
+              "type": "number"
+            },
+            "dpi": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "ratio", "dpi"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "How a drawing was put to scale: on a known length between two of its points (`metres`), or by the scale written on it (1:`ratio`) and the dpi it was scanned at. A better scan laid over it keeps it."
+    },
+    "Level": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "shortName": {
+          "type": "string",
+          "description": "as a lift's button says it (\"3\", \"-1\"); `name` when absent"
+        },
+        "elevation": {
+          "type": "number",
+          "description": "height of its floor above the ground, m"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "name", "elevation"],
+      "additionalProperties": false
+    },
+    "Area": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["dwelling", "garage", "cellar", "outdoor", "zone"]
+        }
+      },
+      "required": ["id", "name", "kind"],
+      "additionalProperties": false,
+      "description": "A group of rooms, independent of levels and sheets"
+    },
+    "Plan": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "sheet": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/definitions/Pt",
+          "description": "the sheet point that becomes the plan's (0, 0) in metres"
+        },
+        "placement": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Placement"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "real position in the site; null = detached (only an arranged presentation places it)"
+        },
+        "heights": {
+          "$ref": "#/definitions/PlanHeights"
+        },
+        "rooms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Room"
+          },
+          "description": "in the order the house is gone through"
+        },
+        "walls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Wall"
+          }
+        },
+        "awnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Awning"
+          }
+        },
+        "finishes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "description": "wall claddings, always shown"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "description": "simple furniture blocks"
+        },
+        "lights": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LightFixture"
+          }
+        },
+        "plates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Plate"
+          },
+          "description": "the light switches' and sockets' plates on its walls (redesign.md §7)"
+        },
+        "stairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Stair"
+          },
+          "description": "the stairs that start on this plan (floor-plan-editor.md §8d)"
+        },
+        "annotations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Annotation"
+          },
+          "description": "dimension lines and notes for people: printed, ignored by the renderer"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "sheet",
+        "level",
+        "origin",
+        "placement",
+        "heights",
+        "rooms",
+        "walls",
+        "awnings",
+        "finishes",
+        "items",
+        "lights",
+        "plates"
+      ],
+      "additionalProperties": false,
+      "description": "A region of a sheet laid on a level, with everything drawn on it"
+    },
+    "Placement": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        },
+        "rotation": {
+          "type": "number",
+          "description": "degrees, clockwise as seen from above"
+        }
+      },
+      "required": ["x", "z", "rotation"],
+      "additionalProperties": false,
+      "description": "Where a plan really is: its origin in site metres, and how far it is turned"
+    },
+    "PlanHeights": {
+      "type": "object",
+      "properties": {
+        "ceiling": {
+          "type": "number"
+        },
+        "outdoorFloor": {
+          "type": "number",
+          "description": "outdoor floors (balconies, landing) sit this far from the indoor ones"
+        },
+        "balconySlab": {
+          "type": "number",
+          "description": "balcony slab under the outdoor floor"
+        },
+        "slab": {
+          "type": "number",
+          "description": "the floor's structure from this plan's ceiling to the floor of the level above; absent, a typical 30 cm"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sources": {
+          "$ref": "#/definitions/MeasureSources%3C(%22ceiling%22%7C%22outdoorFloor%22%7C%22slab%22)%3E"
+        }
+      },
+      "required": ["ceiling", "outdoorFloor", "balconySlab"],
+      "additionalProperties": false,
+      "description": "Heights of a plan, m"
+    },
+    "MeasureSources<(\"ceiling\"|\"outdoorFloor\"|\"slab\")>": {
+      "type": "object",
+      "properties": {
+        "ceiling": {
+          "$ref": "#/definitions/MeasureSource"
+        },
+        "outdoorFloor": {
+          "$ref": "#/definitions/MeasureSource"
+        },
+        "slab": {
+          "$ref": "#/definitions/MeasureSource"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Where each of some measures comes from, by the measure's name; one not listed says nothing"
+    },
+    "MeasureSource": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "typed"
+            }
+          },
+          "required": ["kind"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "typical"
+            },
+            "era": {
+              "$ref": "#/definitions/BuildEra"
+            }
+          },
+          "required": ["kind"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "Where one of the house's measures comes from: typed by the person, or typical (of the house's era when it was chosen, else the usual one), an assumption said so wherever it shows"
+    },
+    "BuildEra": {
+      "type": "string",
+      "enum": ["1960s-1980s", "recent", "class-a"],
+      "description": "How a house was built, for the measures typical of it (`houseDefaults.ts` `ERA_MEASURES`, their sources in floor-plan-editor.md §8c)"
+    },
+    "Room": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/RoomId"
+        },
+        "area": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "shortName": {
+          "type": "string",
+          "description": "where space is tight; `name` when absent"
+        },
+        "cadastral": {
+          "type": "string",
+          "description": "designation written on the cadastral plan"
+        },
+        "shape": {
+          "$ref": "#/definitions/RoomShape"
+        },
+        "use": {
+          "$ref": "#/definitions/RoomUse",
+          "description": "what the room is for: the electrical norm's minimum sockets go by it (CEI 64-8); absent, not said yet"
+        },
+        "floor": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/FloorKind"
+            },
+            {
+              "$ref": "#/definitions/FloorRef"
+            }
+          ],
+          "description": "a kind of floor, or one of the home's own floors by id (`floors`); absent: no floor chosen yet (the editor tells such rooms apart by a hue of their own, redesign.md R9)"
+        },
+        "floorAngle": {
+          "type": "number",
+          "description": "the direction its strips run, degrees from the sheet's x (0 = east–west, 90 = north–south): a parquet's, and added to a floor of the home's own direction"
+        },
+        "paint": {
+          "$ref": "#/definitions/RoomPaint",
+          "description": "painted walls; every other wall is white"
+        },
+        "wallTiling": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WallTiling"
+          },
+          "description": "its walls' tiled areas (redesign.md §8f), over the paint"
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoomView"
+          },
+          "description": "the ways of looking at the room from above, the first being the overview it opens with"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "area", "name", "shape", "views"],
+      "additionalProperties": false
+    },
+    "RoomId": {
+      "type": "string",
+      "description": "A room's id: the name used at home and by the devices that name it (external)"
+    },
+    "RoomShape": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "region"
+        },
+        "at": {
+          "$ref": "#/definitions/Pt"
+        }
+      },
+      "required": ["kind", "at"],
+      "additionalProperties": false,
+      "description": "The region the plan's walls (separators and railings included) enclose around `at`"
+    },
+    "RoomUse": {
+      "type": "string",
+      "enum": [
+        "living",
+        "bedroom",
+        "study",
+        "kitchen",
+        "kitchenette",
+        "bathroom",
+        "wc",
+        "laundry",
+        "hallway",
+        "entrance",
+        "storage",
+        "balcony",
+        "cellar",
+        "garage",
+        "other"
+      ],
+      "description": "What a room is for, as the electrical norm's table names them (CEI 64-8, part 3, annex A)"
+    },
+    "FloorKind": {
+      "type": "string",
+      "enum": ["parquet", "gres", "concrete", "outdoor", "common"],
+      "description": "parquet, gres, concrete: indoor · outdoor: balconies, a step down, no ceiling · common: the shared landing"
+    },
+    "FloorRef": {
+      "type": "object",
+      "properties": {
+        "floor": {
+          "type": "string"
+        }
+      },
+      "required": ["floor"],
+      "additionalProperties": false,
+      "description": "One of the home's own floors, by its id (`HomeModel.floors`)"
+    },
+    "RoomPaint": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "walls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["color", "walls"],
+      "additionalProperties": false,
+      "description": "The room's walls painted, each on its face towards this room (a wall shared by two rooms has two faces)"
+    },
+    "WallTiling": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tiles": {
+          "type": "string",
+          "description": "the home's wall tiles laid (`wallTiles`)"
+        },
+        "on": {
+          "$ref": "#/definitions/WallTilingSpan"
+        },
+        "bottom": {
+          "type": "number",
+          "description": "m above the floor"
+        },
+        "top": {
+          "$ref": "#/definitions/WallTilingTop"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "tiles", "on", "bottom", "top"],
+      "additionalProperties": false,
+      "description": "An area of a room's walls laid with tiles, on their faces towards the room (redesign.md §8f), from `bottom` up to `top`: a bathroom's walls to 1.20 m, a shower's to 2.10 m, a kitchen's splashback between the worktop and the wall units"
+    },
+    "WallTilingSpan": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "walls"
+            },
+            "walls": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["kind", "walls"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "stretch"
+            },
+            "wall": {
+              "type": "string"
+            },
+            "along": {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "number",
+                  "title": "from"
+                },
+                {
+                  "type": "number",
+                  "title": "to"
+                }
+              ],
+              "maxItems": 2
+            }
+          },
+          "required": ["kind", "wall", "along"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "Where along the walls: whole faces, or a stretch of one wall"
+    },
+    "WallTilingTop": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "string",
+              "const": "height"
+            },
+            "height": {
+              "type": "number"
+            }
+          },
+          "required": ["to", "height"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "string",
+              "const": "ceiling"
+            }
+          },
+          "required": ["to"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "Up to a height (m above the floor), or the ceiling, wherever the storey puts it"
+    },
+    "RoomView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "dir": {
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "number",
+              "title": "x"
+            },
+            {
+              "type": "number",
+              "title": "z"
+            }
+          ],
+          "maxItems": 2
+        },
+        "lower": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "wall ids"
+        },
+        "elevation": {
+          "type": "number",
+          "description": "degrees above the horizon; the camera's default when absent"
+        }
+      },
+      "required": ["id", "name", "dir", "lower"],
+      "additionalProperties": false,
+      "description": "One way of looking at a room: `dir` is the horizontal direction from the room towards the camera (x east, z south); `lower` the walls lowered so they don't hide the room."
+    },
+    "Wall": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "a": {
+          "$ref": "#/definitions/Pt"
+        },
+        "b": {
+          "$ref": "#/definitions/Pt"
+        },
+        "sagitta": {
+          "type": "number",
+          "description": "sheet units; how far the middle of the line bulges to the left of a → b (y down); 0 or absent: straight"
+        },
+        "thickness": {
+          "type": "number",
+          "description": "m; 0 for a separator"
+        },
+        "height": {
+          "type": "number",
+          "description": "m; full storey height when absent"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["wall", "parapet", "railing", "separator"]
+        },
+        "openings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Opening"
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "a", "b", "thickness", "kind", "openings"],
+      "additionalProperties": false,
+      "description": "A wall: its centre line from `a` to `b`, straight or an arc. A railing's line is the outer edge of the slab it stands on (its kerb lies inside it); a separator has no body, it only divides two rooms of one open space."
+    },
+    "Opening": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/definitions/OpeningKind",
+          "description": "a passage is a doorway with no frame and no leaf"
+        },
+        "along": {
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "number",
+              "title": "from"
+            },
+            {
+              "type": "number",
+              "title": "to"
+            }
+          ],
+          "maxItems": 2,
+          "description": "where it runs along its wall's centre line, sheet units from the wall's end `a`"
+        },
+        "sill": {
+          "type": "number",
+          "description": "m above the floor"
+        },
+        "top": {
+          "type": "number"
+        },
+        "leaves": {
+          "type": "number",
+          "description": "number of sashes (default: 2 if wider than 90 cm)"
+        },
+        "knx": {
+          "type": "string",
+          "description": "shutter entity in the KNX bridge"
+        },
+        "type": {
+          "type": "string",
+          "description": "the house's opening type it is (`openingTypes`); its leaves, frame, glazing, sills and shading come from it"
+        },
+        "inside": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "which side of its wall is its inside, walking the wall a → b; worked out from the rooms when absent (the side with an indoor room)"
+        },
+        "overrides": {
+          "type": "object",
+          "properties": {
+            "leaves": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Leaf"
+              }
+            },
+            "frame": {
+              "type": "object",
+              "properties": {
+                "material": {
+                  "$ref": "#/definitions/FrameMaterial"
+                },
+                "colorInside": {
+                  "type": "string"
+                },
+                "colorOutside": {
+                  "type": "string"
+                },
+                "position": {
+                  "type": "string",
+                  "enum": ["inner", "middle", "outer"],
+                  "description": "where the frame sits in the wall's thickness"
+                }
+              },
+              "required": ["material", "colorInside", "colorOutside", "position"],
+              "additionalProperties": false
+            },
+            "glazing": {
+              "$ref": "#/definitions/Glazing"
+            },
+            "sills": {
+              "type": "object",
+              "properties": {
+                "inner": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "material": {
+                          "$ref": "#/definitions/SillMaterial"
+                        },
+                        "overhang": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["material", "overhang"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "outer": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "material": {
+                          "$ref": "#/definitions/SillMaterial"
+                        }
+                      },
+                      "required": ["material"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": ["inner", "outer"],
+              "additionalProperties": false
+            },
+            "shading": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ShadingLayer"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "description": "what this opening has of its own, over its type's (or over its kind's defaults when it has none)"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "kind", "along", "sill", "top"],
+      "additionalProperties": false
+    },
+    "OpeningKind": {
+      "type": "string",
+      "enum": ["door", "window", "french", "passage"]
+    },
+    "Leaf": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "$ref": "#/definitions/LeafOperation"
+        },
+        "hinge": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "the side its hinges are on, seen from inside"
+        },
+        "opens": {
+          "type": "string",
+          "enum": ["in", "out"],
+          "description": "into the room (in) or out of it"
+        },
+        "share": {
+          "type": "number",
+          "description": "its share of the opening's width, 0–1; leaves without one share what is left equally"
+        }
+      },
+      "required": ["operation", "hinge", "opens"],
+      "additionalProperties": false
+    },
+    "LeafOperation": {
+      "type": "string",
+      "enum": [
+        "side-hung",
+        "tilt-turn",
+        "fixed",
+        "sliding",
+        "lift-slide",
+        "hung",
+        "bottom-hung",
+        "pivot",
+        "folding"
+      ],
+      "description": "How a leaf opens"
+    },
+    "FrameMaterial": {
+      "type": "string",
+      "enum": ["wood", "pvc", "aluminium", "wood-aluminium", "steel"]
+    },
+    "Glazing": {
+      "type": "string",
+      "enum": ["double", "triple", "frosted", "reflective", "safety"]
+    },
+    "SillMaterial": {
+      "type": "string",
+      "enum": ["wood", "marble", "stone", "metal"]
+    },
+    "ShadingLayer": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/ShadingKind"
+        },
+        "box": {
+          "type": "string",
+          "enum": ["inside", "outside", "hidden"],
+          "description": "a roller shutter's box: in the room, on the façade, or hidden in the wall"
+        },
+        "drive": {
+          "type": "string",
+          "enum": ["manual", "strap", "motor"]
+        },
+        "panels": {
+          "type": "string",
+          "enum": ["louvred", "solid"],
+          "description": "shutters' panels (hinged or sliding ones only): slatted, or solid wood (Italian \"persiane\" and \"scuri\")"
+        }
+      },
+      "required": ["kind"],
+      "additionalProperties": false
+    },
+    "ShadingKind": {
+      "type": "string",
+      "enum": [
+        "roller-shutter",
+        "hinged-shutters",
+        "sliding-shutters",
+        "interior-shutters",
+        "external-venetian",
+        "insect-screen",
+        "venetian",
+        "roller-blind",
+        "pleated",
+        "roman",
+        "curtain"
+      ],
+      "description": "The layers that shade an opening: outside the glass, then inside it"
+    },
+    "Awning": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "knx": {
+          "type": "string",
+          "description": "cover entity in the KNX bridge; absent until it is bound"
+        },
+        "wall": {
+          "type": "string"
+        },
+        "side": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "which face it hangs on, walking the wall a → b (y down)"
+        },
+        "along": {
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "number",
+              "title": "from"
+            },
+            {
+              "type": "number",
+              "title": "to"
+            }
+          ],
+          "maxItems": 2,
+          "description": "its width along the wall, sheet units from the wall's end `a`; it may reach past the wall's ends"
+        },
+        "depth": {
+          "type": "number",
+          "description": "m, from the wall's face to the outer edge"
+        },
+        "hWall": {
+          "type": "number",
+          "description": "m above the floor, at the wall and at the outer edge"
+        },
+        "hOut": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "wall", "side", "along", "depth", "hWall", "hOut"],
+      "additionalProperties": false,
+      "description": "A motorised sun awning, hanging on a wall's face"
+    },
+    "Item": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rect": {
+          "$ref": "#/definitions/Rect"
+        },
+        "h": {
+          "type": "number",
+          "description": "m"
+        },
+        "y0": {
+          "type": "number",
+          "description": "m above the floor"
+        },
+        "rotation": {
+          "type": "number",
+          "description": "degrees, clockwise about the rectangle's centre"
+        },
+        "color": {
+          "type": "string"
+        },
+        "glow": {
+          "type": "boolean"
+        },
+        "glass": {
+          "type": "boolean"
+        },
+        "texture": {
+          "type": "string",
+          "const": "brick"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "rect", "h", "color"],
+      "additionalProperties": false,
+      "description": "A plain block: a cladding or a piece of furniture not yet a catalog product"
+    },
+    "Rect": {
+      "type": "array",
+      "minItems": 4,
+      "items": [
+        {
+          "type": "number",
+          "title": "x0"
+        },
+        {
+          "type": "number",
+          "title": "y0"
+        },
+        {
+          "type": "number",
+          "title": "x1"
+        },
+        {
+          "type": "number",
+          "title": "y1"
+        }
+      ],
+      "maxItems": 4
+    },
+    "LightFixture": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "bulbPendant",
+              "description": "a bare bulb on a cable from the ceiling"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "drop": {
+              "type": "number",
+              "description": "from the ceiling to the bulb, m"
+            },
+            "cd": {
+              "type": "number",
+              "description": "the bulb's light, candelas"
+            },
+            "id": {
+              "type": "string"
+            },
+            "entity": {
+              "type": "string",
+              "description": "the device that drives it (a Home Assistant entity or a KNX bridge id); absent until it is bound"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["at", "cd", "drop", "id", "kind"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "barPendant"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "id": {
+              "type": "string"
+            },
+            "entity": {
+              "type": "string",
+              "description": "the device that drives it (a Home Assistant entity or a KNX bridge id); absent until it is bound"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["at", "id", "kind"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "sputnik"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "id": {
+              "type": "string"
+            },
+            "entity": {
+              "type": "string",
+              "description": "the device that drives it (a Home Assistant entity or a KNX bridge id); absent until it is bound"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["at", "id", "kind"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "squareCeiling"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "id": {
+              "type": "string"
+            },
+            "entity": {
+              "type": "string",
+              "description": "the device that drives it (a Home Assistant entity or a KNX bridge id); absent until it is bound"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["at", "id", "kind"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ledStrip",
+              "description": "an LED strip from `a` to `b`, at any angle"
+            },
+            "a": {
+              "$ref": "#/definitions/Pt"
+            },
+            "b": {
+              "$ref": "#/definitions/Pt"
+            },
+            "height": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "enum": ["floor", "ceiling"]
+                },
+                "distance": {
+                  "type": "number"
+                }
+              },
+              "required": ["from", "distance"],
+              "additionalProperties": false,
+              "description": "measured from the floor, or down from the ceiling"
+            },
+            "facing": {
+              "type": "string",
+              "enum": ["down", "up", "left", "right"],
+              "description": "where it shines: up, down, or to the left or right of a → b (y down)"
+            },
+            "intensity": {
+              "type": "number",
+              "description": "at full level"
+            },
+            "id": {
+              "type": "string"
+            },
+            "entity": {
+              "type": "string",
+              "description": "the device that drives it (a Home Assistant entity or a KNX bridge id); absent until it is bound"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["a", "b", "facing", "height", "id", "intensity", "kind"]
+        }
+      ],
+      "description": "A light fixture, tied to the house entity that drives it"
+    },
+    "Plate": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "switch"
+            },
+            "type": {
+              "$ref": "#/definitions/SwitchType"
+            },
+            "entity": {
+              "type": "string",
+              "description": "what it drives, for the host apps (a Home Assistant entity or a KNX bridge id); absent: not said"
+            },
+            "id": {
+              "type": "string"
+            },
+            "wall": {
+              "type": "string"
+            },
+            "side": {
+              "type": "string",
+              "enum": ["left", "right"],
+              "description": "the face it is on, walking the wall a → b (y down): the room it faces is that side's"
+            },
+            "along": {
+              "type": "number",
+              "description": "where its centre is along the wall's centre line, sheet units from the wall's end `a`"
+            },
+            "height": {
+              "type": "number",
+              "description": "m, from the finished floor to its centre; absent: the house's for its kind (`settings.plates`)"
+            },
+            "modules": {
+              "$ref": "#/definitions/PlateModules"
+            },
+            "series": {
+              "type": "string",
+              "description": "its series and colour as the author writes them (\"BTicino Living Now · bianco\"); a catalog product later"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["along", "id", "kind", "modules", "side", "type", "wall"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "socket"
+            },
+            "type": {
+              "$ref": "#/definitions/SocketType"
+            },
+            "id": {
+              "type": "string"
+            },
+            "wall": {
+              "type": "string"
+            },
+            "side": {
+              "type": "string",
+              "enum": ["left", "right"],
+              "description": "the face it is on, walking the wall a → b (y down): the room it faces is that side's"
+            },
+            "along": {
+              "type": "number",
+              "description": "where its centre is along the wall's centre line, sheet units from the wall's end `a`"
+            },
+            "height": {
+              "type": "number",
+              "description": "m, from the finished floor to its centre; absent: the house's for its kind (`settings.plates`)"
+            },
+            "modules": {
+              "$ref": "#/definitions/PlateModules"
+            },
+            "series": {
+              "type": "string",
+              "description": "its series and colour as the author writes them (\"BTicino Living Now · bianco\"); a catalog product later"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": ["along", "id", "kind", "modules", "side", "type", "wall"]
+        }
+      ],
+      "description": "A plate on a wall's face (redesign.md §7): a light switch's or a socket's"
+    },
+    "SwitchType": {
+      "type": "string",
+      "enum": ["switch", "two-way", "push-button", "shutter"],
+      "description": "A light switch's plate: a simple switch, a two-way one, a push button, a shutter's up and down"
+    },
+    "PlateModules": {
+      "type": "number",
+      "enum": [3, 4, 7],
+      "description": "How many module places a plate has"
+    },
+    "SocketType": {
+      "type": "string",
+      "enum": ["standard", "schuko", "usb", "tv", "data"],
+      "description": "A socket's plate: the Italian 10/16 A one, a Schuko, USB, the aerial's, a data network's"
+    },
+    "Stair": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/RunStair"
+        },
+        {
+          "$ref": "#/definitions/SpiralStair"
+        }
+      ],
+      "description": "A stair climbing from its plan's level to another: of runs, or a spiral"
+    },
+    "RunStair": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Pt"
+          },
+          "description": "the walking line on the sheet, from the first riser to the last, in the direction it climbs"
+        },
+        "width": {
+          "type": "number",
+          "description": "m"
+        },
+        "turn": {
+          "type": "string",
+          "enum": ["landing", "winders"],
+          "description": "what fills each turn: a landing, or winders (three steps a quarter turn)"
+        },
+        "id": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string",
+          "description": "the level it climbs to"
+        },
+        "risers": {
+          "type": "number",
+          "description": "how many risers; absent, as few as keep each one under 18 cm of the height it climbs"
+        },
+        "guards": {
+          "$ref": "#/definitions/StairGuards"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "path", "to", "turn", "width"],
+      "description": "A stair of runs (§8d): its shape is its walking line, 2 points straight, 3 an L, 4 a U, its turns square"
+    },
+    "StairGuards": {
+      "type": "object",
+      "properties": {
+        "left": {
+          "$ref": "#/definitions/StairGuard",
+          "description": "as one climbs"
+        },
+        "right": {
+          "$ref": "#/definitions/StairGuard"
+        },
+        "opening": {
+          "$ref": "#/definitions/StairGuard",
+          "description": "round its opening on the level above, but where it arrives; not said, a railing"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A stair's guards; a side not said is worked out (a railing where it is not against a wall)"
+    },
+    "StairGuard": {
+      "type": "string",
+      "enum": ["railing", "wall", "none"],
+      "description": "What guards a side of a stair, or its opening above: a slim railing, a low wall, nothing"
+    },
+    "SpiralStair": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spiral": {
+          "type": "object",
+          "properties": {
+            "centre": {
+              "$ref": "#/definitions/Pt",
+              "description": "on the sheet"
+            },
+            "radius": {
+              "type": "number",
+              "description": "to the outside of its treads, m"
+            },
+            "column": {
+              "type": "number",
+              "description": "the column's radius, m"
+            },
+            "start": {
+              "type": "number",
+              "description": "where the first riser is, degrees from east, clockwise on the sheet"
+            },
+            "sweep": {
+              "type": "number",
+              "description": "how far round it climbs, degrees, + clockwise on the sheet; a whole turn at most"
+            }
+          },
+          "required": ["centre", "radius", "column", "start", "sweep"],
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string",
+          "description": "the level it climbs to"
+        },
+        "risers": {
+          "type": "number",
+          "description": "how many risers; absent, as few as keep each one under 18 cm of the height it climbs"
+        },
+        "guards": {
+          "$ref": "#/definitions/StairGuards"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "spiral", "to"],
+      "description": "A spiral stair round its column (§8d)"
+    },
+    "Annotation": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/DimensionAnnotation"
+        },
+        {
+          "$ref": "#/definitions/NoteAnnotation"
+        }
+      ]
+    },
+    "DimensionAnnotation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "const": "dimension"
+        },
+        "from": {
+          "$ref": "#/definitions/DimensionEnd"
+        },
+        "to": {
+          "$ref": "#/definitions/DimensionEnd"
+        },
+        "at": {
+          "$ref": "#/definitions/Pt",
+          "description": "a point of the sheet the dimension line runs through: where it is drawn, not what it measures"
+        },
+        "measured": {
+          "type": "object",
+          "properties": {
+            "metres": {
+              "type": "number"
+            },
+            "date": {
+              "type": "string"
+            }
+          },
+          "required": ["metres", "date"],
+          "additionalProperties": false,
+          "description": "taken on site: what the tape said, m, and the day (YYYY-MM-DD); the plan must keep agreeing with it"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "kind", "from", "to", "at"],
+      "additionalProperties": false
+    },
+    "DimensionEnd": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "point"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            }
+          },
+          "required": ["kind", "at"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "face"
+            },
+            "wall": {
+              "type": "string"
+            },
+            "side": {
+              "type": "string",
+              "enum": ["left", "right"]
+            }
+          },
+          "required": ["kind", "wall", "side"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "One end of a dimension"
+    },
+    "NoteAnnotation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "const": "note"
+        },
+        "at": {
+          "$ref": "#/definitions/Pt",
+          "description": "where it is pinned on the sheet"
+        },
+        "text": {
+          "type": "string"
+        },
+        "colour": {
+          "$ref": "#/definitions/NoteColour",
+          "description": "absent: `yellow`"
+        }
+      },
+      "required": ["id", "kind", "at", "text"],
+      "additionalProperties": false
+    },
+    "NoteColour": {
+      "type": "string",
+      "enum": ["yellow", "coral", "green", "blue", "violet"]
+    },
+    "Presentation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["true", "arranged"],
+          "description": "true: every plan at its real placement; arranged: each area moved by its own offset"
+        },
+        "areas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PresentedArea"
+          }
+        },
+        "walk": {
+          "$ref": "#/definitions/WalkStart"
+        }
+      },
+      "required": ["id", "name", "mode", "areas"],
+      "additionalProperties": false,
+      "description": "Which areas are shown together, and where"
+    },
+    "PresentedArea": {
+      "type": "object",
+      "properties": {
+        "area": {
+          "type": "string"
+        },
+        "offset": {
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "number",
+              "title": "x"
+            },
+            {
+              "type": "number",
+              "title": "z"
+            }
+          ],
+          "maxItems": 2,
+          "description": "arranged only: how far the area's plans move from their placement, m"
+        }
+      },
+      "required": ["area"],
+      "additionalProperties": false
+    },
+    "WalkStart": {
+      "type": "object",
+      "properties": {
+        "plan": {
+          "type": "string"
+        },
+        "from": {
+          "$ref": "#/definitions/Pt"
+        },
+        "towards": {
+          "$ref": "#/definitions/Pt"
+        }
+      },
+      "required": ["plan", "from", "towards"],
+      "additionalProperties": false,
+      "description": "Standing at `from`, looking towards `towards`: sheet units of `plan`"
+    },
+    "OpeningType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "leaves": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Leaf"
+          }
+        },
+        "frame": {
+          "type": "object",
+          "properties": {
+            "material": {
+              "$ref": "#/definitions/FrameMaterial"
+            },
+            "colorInside": {
+              "type": "string"
+            },
+            "colorOutside": {
+              "type": "string"
+            },
+            "position": {
+              "type": "string",
+              "enum": ["inner", "middle", "outer"],
+              "description": "where the frame sits in the wall's thickness"
+            }
+          },
+          "required": ["material", "colorInside", "colorOutside", "position"],
+          "additionalProperties": false
+        },
+        "glazing": {
+          "$ref": "#/definitions/Glazing"
+        },
+        "sills": {
+          "type": "object",
+          "properties": {
+            "inner": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "material": {
+                      "$ref": "#/definitions/SillMaterial"
+                    },
+                    "overhang": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["material", "overhang"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "outer": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "material": {
+                      "$ref": "#/definitions/SillMaterial"
+                    }
+                  },
+                  "required": ["material"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": ["inner", "outer"],
+          "additionalProperties": false
+        },
+        "shading": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShadingLayer"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "the author's name for it (\"Finestra standard\")"
+        },
+        "kind": {
+          "$ref": "#/definitions/OpeningKind"
+        },
+        "width": {
+          "type": "number",
+          "description": "m"
+        },
+        "sill": {
+          "type": "number"
+        },
+        "top": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "frame",
+        "glazing",
+        "id",
+        "kind",
+        "leaves",
+        "name",
+        "shading",
+        "sill",
+        "sills",
+        "top",
+        "width"
+      ],
+      "description": "One of the house's kinds of windows or doors: placed already configured, its size the starting one"
+    },
+    "FloorDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "the author's name for it (\"Rovere a spina\")"
+        },
+        "kind": {
+          "$ref": "#/definitions/FloorKind",
+          "description": "what it is, for what follows from it: an outdoor floor a step down and open to the sky"
+        },
+        "kit": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "version": {
+              "type": "number"
+            }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false,
+          "description": "a copy of one of the author's kits: its id and the version copied (a newer one is proposed, never imposed)"
+        },
+        "source": {
+          "type": "string"
+        },
+        "material": {
+          "$ref": "#/definitions/LayingMaterial"
+        },
+        "pattern": {
+          "$ref": "#/definitions/LayingPattern"
+        },
+        "tile": {
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "number",
+              "title": "length"
+            },
+            {
+              "type": "number",
+              "title": "width"
+            }
+          ],
+          "maxItems": 2,
+          "description": "m: a piece's length and width; a hexagon is as wide across its flats as both (the parser asks them equal)"
+        },
+        "joint": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "description": "m"
+            },
+            "color": {
+              "type": "string"
+            }
+          },
+          "required": ["width", "color"],
+          "additionalProperties": false
+        },
+        "direction": {
+          "type": "number",
+          "enum": [0, 45, 90],
+          "description": "degrees, the pieces' length turned from the region's x (a floor: the sheet's; a wall: along it)"
+        },
+        "variation": {
+          "type": "number",
+          "description": "how much one piece's shade may differ from the next, 0–0.5"
+        },
+        "finish": {
+          "type": "string",
+          "enum": ["matte", "satin", "gloss"]
+        },
+        "product": {
+          "type": "string",
+          "description": "the product it is, as the author writes it (\"Marazzi Treverk 10×60\"); a catalog product later"
+        }
+      },
+      "required": [
+        "direction",
+        "finish",
+        "id",
+        "joint",
+        "kind",
+        "material",
+        "name",
+        "pattern",
+        "tile",
+        "variation"
+      ],
+      "description": "A floor made by the person (redesign.md §8, R13): its laying and what kind of floor it is. Kept in the home (only this home's, or the copy of one of the author's kits, with the kit's id and the version copied)"
+    },
+    "LayingMaterial": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "string"
+            }
+          },
+          "required": ["image"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sample": {
+              "$ref": "#/definitions/MaterialSample"
+            }
+          },
+          "required": ["sample"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string"
+            }
+          },
+          "required": ["color"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "What every piece of a laying shows: an image uploaded (its file by sha256), a sample, or a plain colour"
+    },
+    "MaterialSample": {
+      "type": "string",
+      "enum": ["oak", "white-oak", "bleached-oak", "grey-wood", "marble", "cement"],
+      "description": "The photos of materials Blupinta offers to lay pieces of, named by how they look: each a CC0 texture of Poly Haven's (`apps/web/public/floor-samples`, where each comes from is said there)"
+    },
+    "LayingPattern": {
+      "type": "string",
+      "enum": ["straight", "half", "third", "herringbone", "chevron", "basket", "hexagons"],
+      "description": "How a laying's pieces are set out (`laying.ts`)"
+    },
+    "WallTileDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "the author's name for them (\"Bianco lucido 10×20\")"
+        },
+        "kit": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "version": {
+              "type": "number"
+            }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false,
+          "description": "a copy of one of the author's kits: its id and the version copied (a newer one is proposed, never imposed)"
+        },
+        "source": {
+          "type": "string"
+        },
+        "material": {
+          "$ref": "#/definitions/LayingMaterial"
+        },
+        "pattern": {
+          "$ref": "#/definitions/LayingPattern"
+        },
+        "tile": {
+          "type": "array",
+          "minItems": 2,
+          "items": [
+            {
+              "type": "number",
+              "title": "length"
+            },
+            {
+              "type": "number",
+              "title": "width"
+            }
+          ],
+          "maxItems": 2,
+          "description": "m: a piece's length and width; a hexagon is as wide across its flats as both (the parser asks them equal)"
+        },
+        "joint": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "description": "m"
+            },
+            "color": {
+              "type": "string"
+            }
+          },
+          "required": ["width", "color"],
+          "additionalProperties": false
+        },
+        "direction": {
+          "type": "number",
+          "enum": [0, 45, 90],
+          "description": "degrees, the pieces' length turned from the region's x (a floor: the sheet's; a wall: along it)"
+        },
+        "variation": {
+          "type": "number",
+          "description": "how much one piece's shade may differ from the next, 0–0.5"
+        },
+        "finish": {
+          "type": "string",
+          "enum": ["matte", "satin", "gloss"]
+        },
+        "product": {
+          "type": "string",
+          "description": "the product it is, as the author writes it (\"Marazzi Treverk 10×60\"); a catalog product later"
+        }
+      },
+      "required": ["direction", "finish", "id", "joint", "material", "name", "pattern", "tile", "variation"],
+      "description": "Wall tiles made by the person (redesign.md §8f): their laying, as a floor's but with no kind. Kept in the home as floors are (only this home's, or the copy of one of the author's kits)"
+    },
+    "HouseSettings": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/HouseKind"
+        },
+        "era": {
+          "$ref": "#/definitions/BuildEra",
+          "description": "how it was built: the measures typical of it are offered (the wizard's measures)"
+        },
+        "walls": {
+          "type": "object",
+          "properties": {
+            "outer": {
+              "type": "number"
+            },
+            "inner": {
+              "type": "number"
+            },
+            "sources": {
+              "$ref": "#/definitions/MeasureSources%3C(%22outer%22%7C%22inner%22)%3E"
+            }
+          },
+          "required": ["outer", "inner"],
+          "additionalProperties": false,
+          "description": "m: the thickness new outer and inner walls start with"
+        },
+        "roomFloor": {
+          "$ref": "#/definitions/FloorKind",
+          "description": "the floor a new indoor room starts with"
+        },
+        "toolTypes": {
+          "type": "object",
+          "properties": {
+            "door": {
+              "type": "string"
+            },
+            "window": {
+              "type": "string"
+            },
+            "french": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "description": "the house's type (one of `openingTypes`, of that kind) each opening tool starts with"
+        },
+        "plates": {
+          "type": "object",
+          "properties": {
+            "switchHeight": {
+              "type": "number"
+            },
+            "socketHeight": {
+              "type": "number"
+            },
+            "sources": {
+              "$ref": "#/definitions/MeasureSources%3C(%22switchHeight%22%7C%22socketHeight%22)%3E"
+            }
+          },
+          "required": ["switchHeight", "socketHeight"],
+          "additionalProperties": false,
+          "description": "m, from the finished floor to a plate's centre: where new light switches and sockets go (`housePlates`)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "HouseKind": {
+      "type": "string",
+      "enum": ["flat", "detached", "terraced"]
+    },
+    "MeasureSources<(\"outer\"|\"inner\")>": {
+      "type": "object",
+      "properties": {
+        "outer": {
+          "$ref": "#/definitions/MeasureSource"
+        },
+        "inner": {
+          "$ref": "#/definitions/MeasureSource"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Where each of some measures comes from, by the measure's name; one not listed says nothing"
+    },
+    "MeasureSources<(\"switchHeight\"|\"socketHeight\")>": {
+      "type": "object",
+      "properties": {
+        "switchHeight": {
+          "$ref": "#/definitions/MeasureSource"
+        },
+        "socketHeight": {
+          "$ref": "#/definitions/MeasureSource"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Where each of some measures comes from, by the measure's name; one not listed says nothing"
+    },
+    "HomeSetup": {
+      "type": "object",
+      "properties": {
+        "isFinished": {
+          "type": "boolean",
+          "description": "the guided setup was gone through (or skipped to its end): it no longer opens by itself"
+        },
+        "isChecklistHidden": {
+          "type": "boolean",
+          "description": "the checklist of next steps put away; it is shown again from the house's settings"
+        }
+      },
+      "required": ["isFinished"],
+      "additionalProperties": false
+    },
+    "ProductManifest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "namespace/name, stable forever (\"ikea/kallax\", \"jal/handmade-drawers\")"
+        },
+        "version": {
+          "type": "number",
+          "description": "bumped on any change that can move or reshape an item"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "description": {
+          "$ref": "#/definitions/Translated"
+        },
+        "category": {
+          "type": "string",
+          "description": "a path in the shared taxonomy: \"storage/shelving\", \"lighting/pendant\", \"decor/wall-art\""
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mount": {
+          "$ref": "#/definitions/Mount"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OptionSpec"
+          }
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": ["string", "number", "boolean"]
+                }
+              },
+              "article": {
+                "type": "string"
+              }
+            },
+            "required": ["options", "article"],
+            "additionalProperties": false
+          },
+          "description": "option combinations the maker sells under its own article number"
+        },
+        "geometry": {
+          "$ref": "#/definitions/GeometrySource"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "w": {
+              "type": "string"
+            },
+            "h": {
+              "type": "string"
+            },
+            "d": {
+              "type": "string"
+            }
+          },
+          "required": ["w", "h", "d"],
+          "additionalProperties": false,
+          "description": "width (x), height (y), depth (z) as expressions of the options, m"
+        },
+        "clearances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Clearance"
+          },
+          "description": "the space it needs in use, beside its sides (furnishing.md §8): drawers pulled out, a door's swing, a chair"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["light", "media", "cover", "appliance", "sensor"]
+              }
+            },
+            "required": ["slot", "kind"],
+            "additionalProperties": false
+          },
+          "description": "what in it a house entity can drive"
+        },
+        "media": {
+          "type": "object",
+          "properties": {
+            "thumbnails": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["thumbnails"],
+          "additionalProperties": false
+        },
+        "source": {
+          "type": "string",
+          "description": "the product sheet or the measurement it comes from"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["product", "manual", "shop"]
+              }
+            },
+            "required": ["url", "kind"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "name",
+        "category",
+        "tags",
+        "mount",
+        "options",
+        "geometry",
+        "size",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "Translated": {
+      "type": "object",
+      "properties": {
+        "it": {
+          "type": "string"
+        },
+        "en": {
+          "type": "string"
+        }
+      },
+      "required": ["it", "en"],
+      "additionalProperties": false,
+      "description": "App content, shared by every user: in each of the app's languages (furnishing.md F5)"
+    },
+    "Mount": {
+      "type": "string",
+      "enum": ["floor", "wall", "ceiling", "surface", "built-in"]
+    },
+    "OptionSpec": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ChoiceOption"
+        },
+        {
+          "$ref": "#/definitions/MaterialOption"
+        },
+        {
+          "$ref": "#/definitions/NumberOption"
+        },
+        {
+          "$ref": "#/definitions/ToggleOption"
+        },
+        {
+          "$ref": "#/definitions/ImageOption"
+        },
+        {
+          "$ref": "#/definitions/SlotsOption"
+        },
+        {
+          "$ref": "#/definitions/TextOption"
+        }
+      ]
+    },
+    "ChoiceOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "choice"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "$ref": "#/definitions/Translated"
+              },
+              "params": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": ["id", "name"],
+            "additionalProperties": false
+          },
+          "description": "each with numbers the expressions read as `<option>.<name>` (KALLAX's `size.cols`)"
+        },
+        "default": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["choices", "default", "id", "kind", "name"]
+    },
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "option": {
+          "type": "string"
+        },
+        "in": {
+          "type": "array",
+          "items": {
+            "type": ["string", "number", "boolean"]
+          }
+        }
+      },
+      "required": ["option", "in"],
+      "additionalProperties": false,
+      "description": "Shows (or allows) an option only when another holds one of some values"
+    },
+    "MaterialOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "material"
+        },
+        "materials": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "the library's materials it is sold in"
+        },
+        "default": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["default", "id", "kind", "materials", "name"]
+    },
+    "NumberOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["m", "count", "degrees"]
+        },
+        "default": {
+          "type": "number"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["default", "id", "kind", "max", "min", "name", "step", "unit"]
+    },
+    "ToggleOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "toggle"
+        },
+        "default": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["default", "id", "kind", "name"]
+    },
+    "ImageOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "image"
+        },
+        "aspect": {
+          "type": "number",
+          "description": "width over height of the picture's place"
+        },
+        "panels": {
+          "type": "number",
+          "description": "a picture cut across panels (a multi-panel canvas), with the gap between them, m"
+        },
+        "gap": {
+          "type": "number"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["aspect", "id", "kind", "name"]
+    },
+    "SlotsOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "slots"
+        },
+        "count": {
+          "type": "string",
+          "description": "how many slots, as an expression of the other options (KALLAX's cells)"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "$ref": "#/definitions/Translated"
+              }
+            },
+            "required": ["id", "name"],
+            "additionalProperties": false
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["choices", "count", "id", "kind", "name"]
+    },
+    "TextOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "text"
+        },
+        "maxLength": {
+          "type": "number"
+        },
+        "default": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/Translated"
+        },
+        "visibleIf": {
+          "$ref": "#/definitions/Condition"
+        }
+      },
+      "required": ["default", "id", "kind", "maxLength", "name"]
+    },
+    "GeometrySource": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "builtin"
+            },
+            "generator": {
+              "type": "string"
+            }
+          },
+          "required": ["kind", "generator"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "envelope"
+            },
+            "material": {
+              "type": "string"
+            }
+          },
+          "required": ["kind"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "gltf"
+            },
+            "models": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ModelChoice"
+              }
+            },
+            "materialVariant": {
+              "type": "string"
+            }
+          },
+          "required": ["kind", "models"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "recipe"
+            },
+            "parts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RecipePart"
+              }
+            }
+          },
+          "required": ["kind", "parts"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ModelChoice": {
+      "type": "object",
+      "properties": {
+        "when": {
+          "$ref": "#/definitions/When"
+        },
+        "model": {
+          "$ref": "#/definitions/ModelRef"
+        },
+        "lod": {
+          "$ref": "#/definitions/ModelRef"
+        }
+      },
+      "required": ["model"],
+      "additionalProperties": false,
+      "description": "A model and the options that choose it; one without `when` is the fallback"
+    },
+    "When": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      },
+      "description": "Option values that must all hold: a choice's or a material's id, a number, yes or no"
+    },
+    "ModelRef": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string"
+        },
+        "file": {
+          "type": "string"
+        }
+      },
+      "required": ["sha256", "file"],
+      "additionalProperties": false,
+      "description": "A model of the catalog: its bytes' sha256, and the file it is published from (`pnpm catalog:assets`)"
+    },
+    "RecipePart": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "shape": {
+              "type": "string",
+              "enum": ["box", "cylinder"]
+            },
+            "size": {
+              "$ref": "#/definitions/Triple"
+            },
+            "material": {
+              "$ref": "#/definitions/MaterialRef"
+            },
+            "at": {
+              "$ref": "#/definitions/Triple",
+              "description": "where the part's box starts: its left, bottom, back corner, from the product's origin (floor, middle, back)"
+            },
+            "count": {
+              "type": "string",
+              "description": "how many, an expression; 0 leaves it out (an option switching a part off)"
+            },
+            "index": {
+              "type": "string",
+              "description": "the name each copy's number (0, 1, …) goes by in the part's expressions"
+            },
+            "name": {
+              "type": "string",
+              "description": "what the part is (\"drawer 1\"), for clearances and, later, animation"
+            }
+          },
+          "required": ["at", "material", "shape", "size"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "shape": {
+              "type": "string",
+              "const": "model"
+            },
+            "models": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ModelChoice"
+              }
+            },
+            "at": {
+              "$ref": "#/definitions/Triple",
+              "description": "where the part's box starts: its left, bottom, back corner, from the product's origin (floor, middle, back)"
+            },
+            "count": {
+              "type": "string",
+              "description": "how many, an expression; 0 leaves it out (an option switching a part off)"
+            },
+            "index": {
+              "type": "string",
+              "description": "the name each copy's number (0, 1, …) goes by in the part's expressions"
+            },
+            "name": {
+              "type": "string",
+              "description": "what the part is (\"drawer 1\"), for clearances and, later, animation"
+            }
+          },
+          "required": ["at", "models", "shape"]
+        }
+      ]
+    },
+    "Triple": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "Three expressions of the options, m: x, y, z or w, h, d"
+    },
+    "MaterialRef": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "option": {
+              "type": "string"
+            }
+          },
+          "required": ["option"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "material": {
+              "type": "string"
+            }
+          },
+          "required": ["material"],
+          "additionalProperties": false
+        }
+      ],
+      "description": "A part's finish: what a material option holds, or a material of the library"
+    },
+    "Clearance": {
+      "type": "object",
+      "properties": {
+        "use": {
+          "$ref": "#/definitions/ClearanceUse"
+        },
+        "side": {
+          "type": "string",
+          "enum": ["front", "back", "left", "right"],
+          "description": "the side it opens out of, as the product faces: across its whole width on the front or back, its depth on a side"
+        },
+        "depth": {
+          "type": "string",
+          "description": "how far out, m, as an expression of the options"
+        },
+        "source": {
+          "type": "string",
+          "description": "where the measure comes from: the product sheet, a measurement, a usual allowance"
+        }
+      },
+      "required": ["use", "side", "depth", "source"],
+      "additionalProperties": false
+    },
+    "ClearanceUse": {
+      "type": "string",
+      "enum": ["drawers", "doors", "seat", "access", "appliance"],
+      "description": "What a clearance is kept free for, named in the editor's warnings"
+    },
+    "InventoryItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "product": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "version": {
+              "type": "number"
+            }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false,
+          "description": "the product and the version it was placed with: a newer one is offered, never forced"
+        },
+        "options": {
+          "$ref": "#/definitions/OptionValues"
+        },
+        "label": {
+          "type": "string",
+          "description": "the author's own name for it (\"Libreria studio\"); the product's name when absent"
+        },
+        "room": {
+          "type": "string",
+          "description": "the room it belongs to, placed or not"
+        },
+        "placement": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ItemPlacement"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "where it stands; null: in the inventory, not placed yet"
+        },
+        "bindings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "a house entity driving one of the product's binding slots"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "product", "options", "placement"],
+      "additionalProperties": false
+    },
+    "OptionValues": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/OptionValue"
+      }
+    },
+    "OptionValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": ["string", "null"]
+          }
+        },
+        {
+          "$ref": "#/definitions/ImageValue"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "One option's value: a choice's or material's id, a number, yes or no, each slot's choice, a picture, a text"
+    },
+    "ImageValue": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "crop": {
+          "type": "array",
+          "minItems": 4,
+          "items": [
+            {
+              "type": "number",
+              "title": "x"
+            },
+            {
+              "type": "number",
+              "title": "y"
+            },
+            {
+              "type": "number",
+              "title": "w"
+            },
+            {
+              "type": "number",
+              "title": "h"
+            }
+          ],
+          "maxItems": 4
+        }
+      },
+      "required": ["file", "crop"],
+      "additionalProperties": false,
+      "description": "A picture in an image option: a file of the project and the part of it shown (fractions of its size)"
+    },
+    "ItemPlacement": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "floor"
+            },
+            "plan": {
+              "type": "string"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "rotation": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "plan", "at", "rotation"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "wall"
+            },
+            "plan": {
+              "type": "string"
+            },
+            "wall": {
+              "type": "string"
+            },
+            "side": {
+              "type": "string",
+              "enum": ["left", "right"]
+            },
+            "along": {
+              "type": "number"
+            },
+            "y0": {
+              "type": "number"
+            },
+            "gap": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "plan", "wall", "side", "along", "y0", "gap"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ceiling"
+            },
+            "plan": {
+              "type": "string"
+            },
+            "at": {
+              "$ref": "#/definitions/Pt"
+            },
+            "rotation": {
+              "type": "number"
+            },
+            "drop": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "plan", "at", "rotation", "drop"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "on"
+            },
+            "parent": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "number",
+                  "title": "x"
+                },
+                {
+                  "type": "number",
+                  "title": "z"
+                }
+              ],
+              "maxItems": 2
+            },
+            "rotation": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "parent", "offset", "rotation"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PieceGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "the author's name for it (\"Postazione\"); none for a group only made to move things together"
+        },
+        "pieces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "two or more pieces of the inventory"
+        }
+      },
+      "required": ["id", "pieces"],
+      "additionalProperties": false
+    },
+    "PieceSet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pieces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SetPiece"
+          }
+        }
+      },
+      "required": ["id", "name", "pieces"],
+      "additionalProperties": false
+    },
+    "SetPiece": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "version": {
+              "type": "number"
+            }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false
+        },
+        "options": {
+          "$ref": "#/definitions/OptionValues"
+        },
+        "label": {
+          "type": "string"
+        },
+        "placement": {
+          "$ref": "#/definitions/SetPlacement"
+        }
+      },
+      "required": ["product", "options", "placement"],
+      "additionalProperties": false
+    },
+    "SetPlacement": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "floor"
+            },
+            "at": {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "number",
+                  "title": "x"
+                },
+                {
+                  "type": "number",
+                  "title": "y"
+                }
+              ],
+              "maxItems": 2
+            },
+            "rotation": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "at", "rotation"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ceiling"
+            },
+            "at": {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "number",
+                  "title": "x"
+                },
+                {
+                  "type": "number",
+                  "title": "y"
+                }
+              ],
+              "maxItems": 2
+            },
+            "rotation": {
+              "type": "number"
+            },
+            "drop": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "at", "rotation", "drop"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "on"
+            },
+            "parent": {
+              "type": "number"
+            },
+            "offset": {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "number",
+                  "title": "x"
+                },
+                {
+                  "type": "number",
+                  "title": "z"
+                }
+              ],
+              "maxItems": 2
+            },
+            "rotation": {
+              "type": "number"
+            }
+          },
+          "required": ["kind", "parent", "offset", "rotation"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

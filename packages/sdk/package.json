@@ -1,0 +1,76 @@
+{
+  "name": "@blupinta/sdk",
+  "version": "0.1.0",
+  "description": "The client of Blupinta's public API: every operation typed, sign-in (device flow, PKCE), a home followed as it is saved, webhooks checked",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blupinta/blupinta-js.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://docs.blupinta.app/reference/libraries/",
+  "keywords": [
+    "blupinta",
+    "floor plan",
+    "home",
+    "api",
+    "oauth"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./src/client.ts",
+    "./auth": "./src/auth.ts",
+    "./errors": "./src/errors.ts",
+    "./watch": "./src/watch.ts",
+    "./webhooks": "./src/webhooks.ts",
+    "./types": "./src/generated/openapi.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "exports": {
+      ".": {
+        "types": "./dist/client.d.ts",
+        "default": "./dist/client.js"
+      },
+      "./auth": {
+        "types": "./dist/auth.d.ts",
+        "default": "./dist/auth.js"
+      },
+      "./errors": {
+        "types": "./dist/errors.d.ts",
+        "default": "./dist/errors.js"
+      },
+      "./watch": {
+        "types": "./dist/watch.d.ts",
+        "default": "./dist/watch.js"
+      },
+      "./webhooks": {
+        "types": "./dist/webhooks.d.ts",
+        "default": "./dist/webhooks.js"
+      },
+      "./types": {
+        "types": "./dist/types.d.ts",
+        "default": "./dist/types.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@blupinta/home": "workspace:^"
+  },
+  "devDependencies": {
+    "tsdown": "0.22.14",
+    "typescript": "^5.9.3"
+  }
+}

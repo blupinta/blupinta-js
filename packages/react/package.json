@@ -1,0 +1,63 @@
+{
+  "name": "@blupinta/react",
+  "version": "0.1.0",
+  "description": "React hooks for Blupinta's public API: a home followed as it is saved, a project, its versions, signing in",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blupinta/blupinta-js.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://docs.blupinta.app/reference/libraries/",
+  "keywords": [
+    "blupinta",
+    "react",
+    "hooks",
+    "home",
+    "floor plan"
+  ],
+  "exports": {
+    "./provider": "./src/provider.ts",
+    "./hooks": "./src/hooks.ts",
+    "./sign-in": "./src/useSignIn.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "exports": {
+      "./provider": {
+        "types": "./dist/provider.d.ts",
+        "default": "./dist/provider.js"
+      },
+      "./hooks": {
+        "types": "./dist/hooks.d.ts",
+        "default": "./dist/hooks.js"
+      },
+      "./sign-in": {
+        "types": "./dist/sign-in.d.ts",
+        "default": "./dist/sign-in.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.3.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@blupinta/sdk": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
+    "tsdown": "0.22.14",
+    "typescript": "^5.9.3"
+  }
+}

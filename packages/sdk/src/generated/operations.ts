@@ -1,0 +1,41 @@
+// Every operation of Blupinta's public API, `/v1`, by its id: how the client sends it and reads its answer.
+// Generated from the API's contract: don't edit it by hand.
+
+export const OPERATIONS = {
+  getApiIndex: { method: 'GET', path: '/v1', answer: 'json', isIdempotent: false },
+  getOpenApiDocument: { method: 'GET', path: '/v1/openapi.json', answer: 'json', isIdempotent: false },
+  checkHome: { method: 'POST', path: '/v1/homes/check', answer: 'json', isIdempotent: false },
+  createProject: { method: 'POST', path: '/v1/projects', answer: 'json', isIdempotent: true },
+  listProjects: { method: 'GET', path: '/v1/projects', answer: 'json', isIdempotent: false },
+  getProject: { method: 'GET', path: '/v1/projects/{projectId}', answer: 'json', isIdempotent: false },
+  renameProject: { method: 'PATCH', path: '/v1/projects/{projectId}', answer: 'json', isIdempotent: false },
+  getHome: { method: 'GET', path: '/v1/projects/{projectId}/home', answer: 'json', isIdempotent: false },
+  listRevisions: { method: 'GET', path: '/v1/projects/{projectId}/revisions', answer: 'json', isIdempotent: false },
+  saveRevision: { method: 'POST', path: '/v1/projects/{projectId}/revisions', answer: 'json', isIdempotent: true },
+  getRevision: { method: 'GET', path: '/v1/projects/{projectId}/revisions/{number}', answer: 'json', isIdempotent: false },
+  projectEvents: { method: 'GET', path: '/v1/projects/{projectId}/events', answer: 'events', isIdempotent: false },
+  getThumbnail: { method: 'GET', path: '/v1/projects/{projectId}/thumbnail', answer: 'bytes', isIdempotent: false },
+  getFile: { method: 'GET', path: '/v1/projects/{projectId}/files/{sha256}', answer: 'bytes', isIdempotent: false },
+  uploadFile: { method: 'POST', path: '/v1/projects/{projectId}/files', answer: 'json', isIdempotent: false },
+  getCatalogModel: { method: 'GET', path: '/v1/projects/{projectId}/catalog/models/{sha256}', answer: 'bytes', isIdempotent: false },
+  getCatalogThumbnail: { method: 'GET', path: '/v1/projects/{projectId}/catalog/thumbnails/{sha256}', answer: 'bytes', isIdempotent: false },
+  exportProject: { method: 'GET', path: '/v1/projects/{projectId}/export', answer: 'bytes', isIdempotent: false },
+  getHostReferences: { method: 'GET', path: '/v1/projects/{projectId}/host-references', answer: 'json', isIdempotent: false },
+  putHostReferences: { method: 'PUT', path: '/v1/projects/{projectId}/host-references', answer: 'json', isIdempotent: false },
+  getDevices: { method: 'GET', path: '/v1/projects/{projectId}/devices', answer: 'json', isIdempotent: false },
+  putDevices: { method: 'PUT', path: '/v1/projects/{projectId}/devices', answer: 'json', isIdempotent: false },
+  searchProducts: { method: 'GET', path: '/v1/catalog/products', answer: 'json', isIdempotent: false },
+  getProduct: { method: 'GET', path: '/v1/catalog/products/{namespace}/{name}', answer: 'json', isIdempotent: false },
+  catalogModel: { method: 'GET', path: '/v1/catalog/models/{sha256}', answer: 'bytes', isIdempotent: false },
+  catalogThumbnail: { method: 'GET', path: '/v1/catalog/thumbnails/{sha256}', answer: 'bytes', isIdempotent: false },
+  listThreads: { method: 'GET', path: '/v1/projects/{projectId}/threads', answer: 'json', isIdempotent: false },
+  openThread: { method: 'POST', path: '/v1/projects/{projectId}/threads', answer: 'json', isIdempotent: true },
+  answerThread: { method: 'POST', path: '/v1/projects/{projectId}/threads/{threadId}/comments', answer: 'json', isIdempotent: true },
+  resolveThread: { method: 'PATCH', path: '/v1/projects/{projectId}/threads/{threadId}', answer: 'json', isIdempotent: false },
+  createWebhook: { method: 'POST', path: '/v1/webhooks', answer: 'json', isIdempotent: true },
+  listWebhooks: { method: 'GET', path: '/v1/webhooks', answer: 'json', isIdempotent: false },
+  deleteWebhook: { method: 'DELETE', path: '/v1/webhooks/{webhookId}', answer: 'nothing', isIdempotent: false },
+  listDeliveries: { method: 'GET', path: '/v1/webhooks/{webhookId}/deliveries', answer: 'json', isIdempotent: false },
+} as const
+
+export type OperationId = keyof typeof OPERATIONS

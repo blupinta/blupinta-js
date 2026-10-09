@@ -1,0 +1,74 @@
+{
+  "name": "@blupinta/cli",
+  "version": "0.1.0",
+  "description": "blupinta: Blupinta's public API from the command line (pull a home, push a version, check a file, follow a project)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blupinta/blupinta-js.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://docs.blupinta.app/reference/libraries/",
+  "keywords": [
+    "blupinta",
+    "cli",
+    "home",
+    "floor plan"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "blupinta": "./dist/cli.js"
+  },
+  "exports": {
+    "./commands/account": "./src/commands/account.ts",
+    "./commands/homes": "./src/commands/homes.ts",
+    "./commands/projects": "./src/commands/projects.ts",
+    "./context": "./src/context.ts",
+    "./credentials": "./src/credentials.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "exports": {
+      "./commands/account": {
+        "types": "./dist/commands/account.d.ts",
+        "default": "./dist/commands/account.js"
+      },
+      "./commands/homes": {
+        "types": "./dist/commands/homes.d.ts",
+        "default": "./dist/commands/homes.js"
+      },
+      "./commands/projects": {
+        "types": "./dist/commands/projects.d.ts",
+        "default": "./dist/commands/projects.js"
+      },
+      "./context": {
+        "types": "./dist/context.d.ts",
+        "default": "./dist/context.js"
+      },
+      "./credentials": {
+        "types": "./dist/credentials.d.ts",
+        "default": "./dist/credentials.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@blupinta/sdk": "workspace:^",
+    "@napi-rs/keyring": "1.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsdown": "0.22.14",
+    "typescript": "^5.9.3"
+  }
+}

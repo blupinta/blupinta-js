@@ -1,0 +1,11 @@
+{
+  "name": "blupinta-js",
+  "private": true,
+  "description": "Blupinta's JavaScript and TypeScript libraries: the workspace of github.com/blupinta/blupinta-js",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

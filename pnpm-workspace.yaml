@@ -1,0 +1,4 @@
+# blupinta-js's own workspace (github.com/blupinta/blupinta-js). In Blupinta's monorepo this folder is
+# packages/public/js, whose packages are the monorepo's own (its pnpm-workspace.yaml); here they are installed alone.
+packages:
+  - "packages/*"
