@@ -753,10 +753,10 @@ export interface components {
             tags: string[];
             mount: components["schemas"]["Mount"];
             options: components["schemas"]["OptionSpec"][];
-            /** @description option combinations the maker sells under its own article number */
+            /** @description option combinations the maker sells under its own article number (a slots option's as its slots' choices) */
             variants?: {
                 options: {
-                    [key: string]: string | number | boolean;
+                    [key: string]: components["schemas"]["VariantValue"];
                 };
                 article: string;
             }[];
@@ -804,12 +804,15 @@ export interface components {
                 params?: {
                     [key: string]: number;
                 };
+                allowedIf?: components["schemas"]["AllowedIf"];
             }[];
             default: string;
             id: string;
             name: components["schemas"]["Translated"];
             visibleIf?: components["schemas"]["Condition"];
         };
+        /** @description A rule between options (furnishing.md §3, a modular system): a value is offered only while every condition holds (BESTÅ's 180 frame only in white) */
+        AllowedIf: components["schemas"]["Condition"][];
         /** @description Shows (or allows) an option only when another holds one of some values */
         Condition: {
             option: string;
@@ -820,6 +823,10 @@ export interface components {
             kind: "material";
             /** @description the library's materials it is sold in */
             materials: string[];
+            /** @description the materials sold only with some other values, by material */
+            allowedIf?: {
+                [key: string]: components["schemas"]["AllowedIf"];
+            };
             default: string;
             id: string;
             name: components["schemas"]["Translated"];
@@ -866,6 +873,7 @@ export interface components {
             choices: {
                 id: string;
                 name: components["schemas"]["Translated"];
+                allowedIf?: components["schemas"]["AllowedIf"];
             }[];
             id: string;
             name: components["schemas"]["Translated"];
@@ -880,6 +888,8 @@ export interface components {
             name: components["schemas"]["Translated"];
             visibleIf?: components["schemas"]["Condition"];
         };
+        /** @description A value a variant names for an option: a choice's or material's id, a number, yes or no, each slot's choice */
+        VariantValue: string | number | boolean | (string | null)[];
         GeometrySource: {
             /** @constant */
             kind: "builtin";
@@ -898,15 +908,17 @@ export interface components {
             kind: "recipe";
             parts: components["schemas"]["RecipePart"][];
         };
-        /** @description A model and the options that choose it; one without `when` is the fallback */
+        /** @description A model and the options that choose it; one without `when` is the fallback. A maker's component carries its article, and how many parts one article gives (STUBBARP's legs come two to a pack) */
         ModelChoice: {
             when?: components["schemas"]["When"];
             model: components["schemas"]["ModelRef"];
             lod?: components["schemas"]["ModelRef"];
+            article?: string;
+            perArticle?: number;
         };
-        /** @description Option values that must all hold: a choice's or a material's id, a number, yes or no */
+        /** @description Option values that must all hold: a choice's or a material's id, a number, yes or no; in a part made per slot, null for its slot left empty */
         When: {
-            [key: string]: string | number | boolean;
+            [key: string]: string | number | boolean | null;
         };
         /** @description A model of the catalog: its bytes' sha256, and the file it is published from (`pnpm catalog:assets`) */
         ModelRef: {
@@ -922,6 +934,12 @@ export interface components {
             at: components["schemas"]["Triple"];
             /** @description how many, an expression; 0 leaves it out (an option switching a part off) */
             count?: string;
+            /** @description one copy per slot of this slots option (`count` of them in each, then): in the part's `when` and its models', the option names this slot's own value; `index` names the slot's position */
+            slots?: string;
+            /** @description in a part made per slot with a count, the name each copy's number within its slot goes by */
+            copy?: string;
+            /** @description the part is made only while these values hold */
+            when?: components["schemas"]["When"];
             /** @description the name each copy's number (0, 1, …) goes by in the part's expressions */
             index?: string;
             /** @description what the part is ("drawer 1"), for clearances and, later, animation */
@@ -934,6 +952,12 @@ export interface components {
             at: components["schemas"]["Triple"];
             /** @description how many, an expression; 0 leaves it out (an option switching a part off) */
             count?: string;
+            /** @description one copy per slot of this slots option (`count` of them in each, then): in the part's `when` and its models', the option names this slot's own value; `index` names the slot's position */
+            slots?: string;
+            /** @description in a part made per slot with a count, the name each copy's number within its slot goes by */
+            copy?: string;
+            /** @description the part is made only while these values hold */
+            when?: components["schemas"]["When"];
             /** @description the name each copy's number (0, 1, …) goes by in the part's expressions */
             index?: string;
             /** @description what the part is ("drawer 1"), for clearances and, later, animation */
