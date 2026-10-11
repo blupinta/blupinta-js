@@ -114,7 +114,17 @@
           "description": "groups of pieces saved to be placed again (furnishing.md §2)"
         }
       },
-      "required": ["schema", "id", "name", "site", "sheets", "levels", "areas", "plans", "presentations"],
+      "required": [
+        "schema",
+        "id",
+        "name",
+        "site",
+        "sheets",
+        "levels",
+        "areas",
+        "plans",
+        "presentations"
+      ],
       "additionalProperties": false
     },
     "Site": {
@@ -134,7 +144,11 @@
           "type": "string"
         }
       },
-      "required": ["lat", "lng", "north"],
+      "required": [
+        "lat",
+        "lng",
+        "north"
+      ],
       "additionalProperties": false,
       "description": "Where the home stands: drives the sun's path"
     },
@@ -160,7 +174,10 @@
           "type": "string"
         }
       },
-      "required": ["id", "pxPerM"],
+      "required": [
+        "id",
+        "pxPerM"
+      ],
       "additionalProperties": false,
       "description": "A drawing's frame of coordinates and its scale; it knows nothing about floors"
     },
@@ -191,7 +208,11 @@
               "type": "number"
             }
           },
-          "required": ["at", "scale", "rotation"],
+          "required": [
+            "at",
+            "scale",
+            "rotation"
+          ],
           "additionalProperties": false,
           "description": "where the image lies on the sheet: its top-left corner at `at`, `scale` sheet units per image pixel, turned by `rotation` degrees clockwise about `at`. Calibrating or straightening moves the image, never the walls."
         },
@@ -204,7 +225,12 @@
           "description": "how the drawing was put to scale, so what is traced on it measures true; absent: never, it lies at the size it was imported at (a guess) and the editor says so"
         }
       },
-      "required": ["src", "width", "height", "place"],
+      "required": [
+        "src",
+        "width",
+        "height",
+        "place"
+      ],
       "additionalProperties": false
     },
     "Pt": {
@@ -238,7 +264,12 @@
           "type": "number"
         }
       },
-      "required": ["x", "y", "width", "height"],
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
       "additionalProperties": false,
       "description": "A rectangle of an image, in its pixels from its top-left corner"
     },
@@ -255,7 +286,10 @@
               "type": "number"
             }
           },
-          "required": ["kind", "metres"],
+          "required": [
+            "kind",
+            "metres"
+          ],
           "additionalProperties": false
         },
         {
@@ -272,7 +306,11 @@
               "type": "number"
             }
           },
-          "required": ["kind", "ratio", "dpi"],
+          "required": [
+            "kind",
+            "ratio",
+            "dpi"
+          ],
           "additionalProperties": false
         }
       ],
@@ -299,7 +337,11 @@
           "type": "string"
         }
       },
-      "required": ["id", "name", "elevation"],
+      "required": [
+        "id",
+        "name",
+        "elevation"
+      ],
       "additionalProperties": false
     },
     "Area": {
@@ -313,10 +355,20 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["dwelling", "garage", "cellar", "outdoor", "zone"]
+          "enum": [
+            "dwelling",
+            "garage",
+            "cellar",
+            "outdoor",
+            "zone"
+          ]
         }
       },
-      "required": ["id", "name", "kind"],
+      "required": [
+        "id",
+        "name",
+        "kind"
+      ],
       "additionalProperties": false,
       "description": "A group of rooms, independent of levels and sheets"
     },
@@ -446,7 +498,11 @@
           "description": "degrees, clockwise as seen from above"
         }
       },
-      "required": ["x", "z", "rotation"],
+      "required": [
+        "x",
+        "z",
+        "rotation"
+      ],
       "additionalProperties": false,
       "description": "Where a plan really is: its origin in site metres, and how far it is turned"
     },
@@ -475,7 +531,11 @@
           "$ref": "#/definitions/MeasureSources%3C(%22ceiling%22%7C%22outdoorFloor%22%7C%22slab%22)%3E"
         }
       },
-      "required": ["ceiling", "outdoorFloor", "balconySlab"],
+      "required": [
+        "ceiling",
+        "outdoorFloor",
+        "balconySlab"
+      ],
       "additionalProperties": false,
       "description": "Heights of a plan, m"
     },
@@ -505,7 +565,9 @@
               "const": "typed"
             }
           },
-          "required": ["kind"],
+          "required": [
+            "kind"
+          ],
           "additionalProperties": false
         },
         {
@@ -519,7 +581,9 @@
               "$ref": "#/definitions/BuildEra"
             }
           },
-          "required": ["kind"],
+          "required": [
+            "kind"
+          ],
           "additionalProperties": false
         }
       ],
@@ -527,7 +591,11 @@
     },
     "BuildEra": {
       "type": "string",
-      "enum": ["1960s-1980s", "recent", "class-a"],
+      "enum": [
+        "1960s-1980s",
+        "recent",
+        "class-a"
+      ],
       "description": "How a house was built, for the measures typical of it (`houseDefaults.ts` `ERA_MEASURES`, their sources in floor-plan-editor.md §8c)"
     },
     "Room": {
@@ -594,7 +662,13 @@
           "type": "string"
         }
       },
-      "required": ["id", "area", "name", "shape", "views"],
+      "required": [
+        "id",
+        "area",
+        "name",
+        "shape",
+        "views"
+      ],
       "additionalProperties": false
     },
     "RoomId": {
@@ -612,7 +686,10 @@
           "$ref": "#/definitions/Pt"
         }
       },
-      "required": ["kind", "at"],
+      "required": [
+        "kind",
+        "at"
+      ],
       "additionalProperties": false,
       "description": "The region the plan's walls (separators and railings included) enclose around `at`"
     },
@@ -639,7 +716,13 @@
     },
     "FloorKind": {
       "type": "string",
-      "enum": ["parquet", "gres", "concrete", "outdoor", "common"],
+      "enum": [
+        "parquet",
+        "gres",
+        "concrete",
+        "outdoor",
+        "common"
+      ],
       "description": "parquet, gres, concrete: indoor · outdoor: balconies, a step down, no ceiling · common: the shared landing"
     },
     "FloorRef": {
@@ -649,7 +732,9 @@
           "type": "string"
         }
       },
-      "required": ["floor"],
+      "required": [
+        "floor"
+      ],
       "additionalProperties": false,
       "description": "One of the home's own floors, by its id (`HomeModel.floors`)"
     },
@@ -669,7 +754,10 @@
           "type": "string"
         }
       },
-      "required": ["color", "walls"],
+      "required": [
+        "color",
+        "walls"
+      ],
       "additionalProperties": false,
       "description": "The room's walls painted, each on its face towards this room (a wall shared by two rooms has two faces)"
     },
@@ -697,7 +785,13 @@
           "type": "string"
         }
       },
-      "required": ["id", "tiles", "on", "bottom", "top"],
+      "required": [
+        "id",
+        "tiles",
+        "on",
+        "bottom",
+        "top"
+      ],
       "additionalProperties": false,
       "description": "An area of a room's walls laid with tiles, on their faces towards the room (redesign.md §8f), from `bottom` up to `top`: a bathroom's walls to 1.20 m, a shower's to 2.10 m, a kitchen's splashback between the worktop and the wall units"
     },
@@ -717,7 +811,10 @@
               }
             }
           },
-          "required": ["kind", "walls"],
+          "required": [
+            "kind",
+            "walls"
+          ],
           "additionalProperties": false
         },
         {
@@ -746,7 +843,11 @@
               "maxItems": 2
             }
           },
-          "required": ["kind", "wall", "along"],
+          "required": [
+            "kind",
+            "wall",
+            "along"
+          ],
           "additionalProperties": false
         }
       ],
@@ -765,7 +866,10 @@
               "type": "number"
             }
           },
-          "required": ["to", "height"],
+          "required": [
+            "to",
+            "height"
+          ],
           "additionalProperties": false
         },
         {
@@ -776,7 +880,9 @@
               "const": "ceiling"
             }
           },
-          "required": ["to"],
+          "required": [
+            "to"
+          ],
           "additionalProperties": false
         }
       ],
@@ -818,7 +924,12 @@
           "description": "degrees above the horizon; the camera's default when absent"
         }
       },
-      "required": ["id", "name", "dir", "lower"],
+      "required": [
+        "id",
+        "name",
+        "dir",
+        "lower"
+      ],
       "additionalProperties": false,
       "description": "One way of looking at a room: `dir` is the horizontal direction from the room towards the camera (x east, z south); `lower` the walls lowered so they don't hide the room."
     },
@@ -848,7 +959,12 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["wall", "parapet", "railing", "separator"]
+          "enum": [
+            "wall",
+            "parapet",
+            "railing",
+            "separator"
+          ]
         },
         "openings": {
           "type": "array",
@@ -860,7 +976,14 @@
           "type": "string"
         }
       },
-      "required": ["id", "a", "b", "thickness", "kind", "openings"],
+      "required": [
+        "id",
+        "a",
+        "b",
+        "thickness",
+        "kind",
+        "openings"
+      ],
       "additionalProperties": false,
       "description": "A wall: its centre line from `a` to `b`, straight or an arc. A railing's line is the outer edge of the slab it stands on (its kerb lies inside it); a separator has no body, it only divides two rooms of one open space."
     },
@@ -911,7 +1034,10 @@
         },
         "inside": {
           "type": "string",
-          "enum": ["left", "right"],
+          "enum": [
+            "left",
+            "right"
+          ],
           "description": "which side of its wall is its inside, walking the wall a → b; worked out from the rooms when absent (the side with an indoor room)"
         },
         "overrides": {
@@ -937,11 +1063,20 @@
                 },
                 "position": {
                   "type": "string",
-                  "enum": ["inner", "middle", "outer"],
+                  "enum": [
+                    "inner",
+                    "middle",
+                    "outer"
+                  ],
                   "description": "where the frame sits in the wall's thickness"
                 }
               },
-              "required": ["material", "colorInside", "colorOutside", "position"],
+              "required": [
+                "material",
+                "colorInside",
+                "colorOutside",
+                "position"
+              ],
               "additionalProperties": false
             },
             "glazing": {
@@ -962,7 +1097,10 @@
                           "type": "number"
                         }
                       },
-                      "required": ["material", "overhang"],
+                      "required": [
+                        "material",
+                        "overhang"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -979,7 +1117,9 @@
                           "$ref": "#/definitions/SillMaterial"
                         }
                       },
-                      "required": ["material"],
+                      "required": [
+                        "material"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -988,7 +1128,10 @@
                   ]
                 }
               },
-              "required": ["inner", "outer"],
+              "required": [
+                "inner",
+                "outer"
+              ],
               "additionalProperties": false
             },
             "shading": {
@@ -1005,12 +1148,23 @@
           "type": "string"
         }
       },
-      "required": ["id", "kind", "along", "sill", "top"],
+      "required": [
+        "id",
+        "kind",
+        "along",
+        "sill",
+        "top"
+      ],
       "additionalProperties": false
     },
     "OpeningKind": {
       "type": "string",
-      "enum": ["door", "window", "french", "passage"]
+      "enum": [
+        "door",
+        "window",
+        "french",
+        "passage"
+      ]
     },
     "Leaf": {
       "type": "object",
@@ -1020,12 +1174,18 @@
         },
         "hinge": {
           "type": "string",
-          "enum": ["left", "right"],
+          "enum": [
+            "left",
+            "right"
+          ],
           "description": "the side its hinges are on, seen from inside"
         },
         "opens": {
           "type": "string",
-          "enum": ["in", "out"],
+          "enum": [
+            "in",
+            "out"
+          ],
           "description": "into the room (in) or out of it"
         },
         "share": {
@@ -1033,7 +1193,11 @@
           "description": "its share of the opening's width, 0–1; leaves without one share what is left equally"
         }
       },
-      "required": ["operation", "hinge", "opens"],
+      "required": [
+        "operation",
+        "hinge",
+        "opens"
+      ],
       "additionalProperties": false
     },
     "LeafOperation": {
@@ -1053,15 +1217,32 @@
     },
     "FrameMaterial": {
       "type": "string",
-      "enum": ["wood", "pvc", "aluminium", "wood-aluminium", "steel"]
+      "enum": [
+        "wood",
+        "pvc",
+        "aluminium",
+        "wood-aluminium",
+        "steel"
+      ]
     },
     "Glazing": {
       "type": "string",
-      "enum": ["double", "triple", "frosted", "reflective", "safety"]
+      "enum": [
+        "double",
+        "triple",
+        "frosted",
+        "reflective",
+        "safety"
+      ]
     },
     "SillMaterial": {
       "type": "string",
-      "enum": ["wood", "marble", "stone", "metal"]
+      "enum": [
+        "wood",
+        "marble",
+        "stone",
+        "metal"
+      ]
     },
     "ShadingLayer": {
       "type": "object",
@@ -1071,20 +1252,33 @@
         },
         "box": {
           "type": "string",
-          "enum": ["inside", "outside", "hidden"],
+          "enum": [
+            "inside",
+            "outside",
+            "hidden"
+          ],
           "description": "a roller shutter's box: in the room, on the façade, or hidden in the wall"
         },
         "drive": {
           "type": "string",
-          "enum": ["manual", "strap", "motor"]
+          "enum": [
+            "manual",
+            "strap",
+            "motor"
+          ]
         },
         "panels": {
           "type": "string",
-          "enum": ["louvred", "solid"],
+          "enum": [
+            "louvred",
+            "solid"
+          ],
           "description": "shutters' panels (hinged or sliding ones only): slatted, or solid wood (Italian \"persiane\" and \"scuri\")"
         }
       },
-      "required": ["kind"],
+      "required": [
+        "kind"
+      ],
       "additionalProperties": false
     },
     "ShadingKind": {
@@ -1119,7 +1313,10 @@
         },
         "side": {
           "type": "string",
-          "enum": ["left", "right"],
+          "enum": [
+            "left",
+            "right"
+          ],
           "description": "which face it hangs on, walking the wall a → b (y down)"
         },
         "along": {
@@ -1153,7 +1350,15 @@
           "type": "string"
         }
       },
-      "required": ["id", "wall", "side", "along", "depth", "hWall", "hOut"],
+      "required": [
+        "id",
+        "wall",
+        "side",
+        "along",
+        "depth",
+        "hWall",
+        "hOut"
+      ],
       "additionalProperties": false,
       "description": "A motorised sun awning, hanging on a wall's face"
     },
@@ -1195,7 +1400,12 @@
           "type": "string"
         }
       },
-      "required": ["id", "rect", "h", "color"],
+      "required": [
+        "id",
+        "rect",
+        "h",
+        "color"
+      ],
       "additionalProperties": false,
       "description": "A plain block: a cladding or a piece of furniture not yet a catalog product"
     },
@@ -1255,7 +1465,13 @@
               "type": "string"
             }
           },
-          "required": ["at", "cd", "drop", "id", "kind"]
+          "required": [
+            "at",
+            "cd",
+            "drop",
+            "id",
+            "kind"
+          ]
         },
         {
           "type": "object",
@@ -1279,7 +1495,11 @@
               "type": "string"
             }
           },
-          "required": ["at", "id", "kind"]
+          "required": [
+            "at",
+            "id",
+            "kind"
+          ]
         },
         {
           "type": "object",
@@ -1303,7 +1523,11 @@
               "type": "string"
             }
           },
-          "required": ["at", "id", "kind"]
+          "required": [
+            "at",
+            "id",
+            "kind"
+          ]
         },
         {
           "type": "object",
@@ -1327,7 +1551,11 @@
               "type": "string"
             }
           },
-          "required": ["at", "id", "kind"]
+          "required": [
+            "at",
+            "id",
+            "kind"
+          ]
         },
         {
           "type": "object",
@@ -1349,19 +1577,30 @@
               "properties": {
                 "from": {
                   "type": "string",
-                  "enum": ["floor", "ceiling"]
+                  "enum": [
+                    "floor",
+                    "ceiling"
+                  ]
                 },
                 "distance": {
                   "type": "number"
                 }
               },
-              "required": ["from", "distance"],
+              "required": [
+                "from",
+                "distance"
+              ],
               "additionalProperties": false,
               "description": "measured from the floor, or down from the ceiling"
             },
             "facing": {
               "type": "string",
-              "enum": ["down", "up", "left", "right"],
+              "enum": [
+                "down",
+                "up",
+                "left",
+                "right"
+              ],
               "description": "where it shines: up, down, or to the left or right of a → b (y down)"
             },
             "intensity": {
@@ -1379,7 +1618,15 @@
               "type": "string"
             }
           },
-          "required": ["a", "b", "facing", "height", "id", "intensity", "kind"]
+          "required": [
+            "a",
+            "b",
+            "facing",
+            "height",
+            "id",
+            "intensity",
+            "kind"
+          ]
         }
       ],
       "description": "A light fixture, tied to the house entity that drives it"
@@ -1409,7 +1656,10 @@
             },
             "side": {
               "type": "string",
-              "enum": ["left", "right"],
+              "enum": [
+                "left",
+                "right"
+              ],
               "description": "the face it is on, walking the wall a → b (y down): the room it faces is that side's"
             },
             "along": {
@@ -1431,7 +1681,15 @@
               "type": "string"
             }
           },
-          "required": ["along", "id", "kind", "modules", "side", "type", "wall"]
+          "required": [
+            "along",
+            "id",
+            "kind",
+            "modules",
+            "side",
+            "type",
+            "wall"
+          ]
         },
         {
           "type": "object",
@@ -1452,7 +1710,10 @@
             },
             "side": {
               "type": "string",
-              "enum": ["left", "right"],
+              "enum": [
+                "left",
+                "right"
+              ],
               "description": "the face it is on, walking the wall a → b (y down): the room it faces is that side's"
             },
             "along": {
@@ -1474,24 +1735,47 @@
               "type": "string"
             }
           },
-          "required": ["along", "id", "kind", "modules", "side", "type", "wall"]
+          "required": [
+            "along",
+            "id",
+            "kind",
+            "modules",
+            "side",
+            "type",
+            "wall"
+          ]
         }
       ],
       "description": "A plate on a wall's face (redesign.md §7): a light switch's or a socket's"
     },
     "SwitchType": {
       "type": "string",
-      "enum": ["switch", "two-way", "push-button", "shutter"],
+      "enum": [
+        "switch",
+        "two-way",
+        "push-button",
+        "shutter"
+      ],
       "description": "A light switch's plate: a simple switch, a two-way one, a push button, a shutter's up and down"
     },
     "PlateModules": {
       "type": "number",
-      "enum": [3, 4, 7],
+      "enum": [
+        3,
+        4,
+        7
+      ],
       "description": "How many module places a plate has"
     },
     "SocketType": {
       "type": "string",
-      "enum": ["standard", "schuko", "usb", "tv", "data"],
+      "enum": [
+        "standard",
+        "schuko",
+        "usb",
+        "tv",
+        "data"
+      ],
       "description": "A socket's plate: the Italian 10/16 A one, a Schuko, USB, the aerial's, a data network's"
     },
     "Stair": {
@@ -1522,7 +1806,10 @@
         },
         "turn": {
           "type": "string",
-          "enum": ["landing", "winders"],
+          "enum": [
+            "landing",
+            "winders"
+          ],
           "description": "what fills each turn: a landing, or winders (three steps a quarter turn)"
         },
         "id": {
@@ -1543,7 +1830,13 @@
           "type": "string"
         }
       },
-      "required": ["id", "path", "to", "turn", "width"],
+      "required": [
+        "id",
+        "path",
+        "to",
+        "turn",
+        "width"
+      ],
       "description": "A stair of runs (§8d): its shape is its walking line, 2 points straight, 3 an L, 4 a U, its turns square"
     },
     "StairGuards": {
@@ -1566,7 +1859,11 @@
     },
     "StairGuard": {
       "type": "string",
-      "enum": ["railing", "wall", "none"],
+      "enum": [
+        "railing",
+        "wall",
+        "none"
+      ],
       "description": "What guards a side of a stair, or its opening above: a slim railing, a low wall, nothing"
     },
     "SpiralStair": {
@@ -1597,7 +1894,13 @@
               "description": "how far round it climbs, degrees, + clockwise on the sheet; a whole turn at most"
             }
           },
-          "required": ["centre", "radius", "column", "start", "sweep"],
+          "required": [
+            "centre",
+            "radius",
+            "column",
+            "start",
+            "sweep"
+          ],
           "additionalProperties": false
         },
         "id": {
@@ -1618,7 +1921,11 @@
           "type": "string"
         }
       },
-      "required": ["id", "spiral", "to"],
+      "required": [
+        "id",
+        "spiral",
+        "to"
+      ],
       "description": "A spiral stair round its column (§8d)"
     },
     "Annotation": {
@@ -1661,7 +1968,10 @@
               "type": "string"
             }
           },
-          "required": ["metres", "date"],
+          "required": [
+            "metres",
+            "date"
+          ],
           "additionalProperties": false,
           "description": "taken on site: what the tape said, m, and the day (YYYY-MM-DD); the plan must keep agreeing with it"
         },
@@ -1669,7 +1979,13 @@
           "type": "string"
         }
       },
-      "required": ["id", "kind", "from", "to", "at"],
+      "required": [
+        "id",
+        "kind",
+        "from",
+        "to",
+        "at"
+      ],
       "additionalProperties": false
     },
     "DimensionEnd": {
@@ -1685,7 +2001,10 @@
               "$ref": "#/definitions/Pt"
             }
           },
-          "required": ["kind", "at"],
+          "required": [
+            "kind",
+            "at"
+          ],
           "additionalProperties": false
         },
         {
@@ -1700,10 +2019,17 @@
             },
             "side": {
               "type": "string",
-              "enum": ["left", "right"]
+              "enum": [
+                "left",
+                "right"
+              ]
             }
           },
-          "required": ["kind", "wall", "side"],
+          "required": [
+            "kind",
+            "wall",
+            "side"
+          ],
           "additionalProperties": false
         }
       ],
@@ -1731,12 +2057,23 @@
           "description": "absent: `yellow`"
         }
       },
-      "required": ["id", "kind", "at", "text"],
+      "required": [
+        "id",
+        "kind",
+        "at",
+        "text"
+      ],
       "additionalProperties": false
     },
     "NoteColour": {
       "type": "string",
-      "enum": ["yellow", "coral", "green", "blue", "violet"]
+      "enum": [
+        "yellow",
+        "coral",
+        "green",
+        "blue",
+        "violet"
+      ]
     },
     "Presentation": {
       "type": "object",
@@ -1749,7 +2086,10 @@
         },
         "mode": {
           "type": "string",
-          "enum": ["true", "arranged"],
+          "enum": [
+            "true",
+            "arranged"
+          ],
           "description": "true: every plan at its real placement; arranged: each area moved by its own offset"
         },
         "areas": {
@@ -1762,7 +2102,12 @@
           "$ref": "#/definitions/WalkStart"
         }
       },
-      "required": ["id", "name", "mode", "areas"],
+      "required": [
+        "id",
+        "name",
+        "mode",
+        "areas"
+      ],
       "additionalProperties": false,
       "description": "Which areas are shown together, and where"
     },
@@ -1789,7 +2134,9 @@
           "description": "arranged only: how far the area's plans move from their placement, m"
         }
       },
-      "required": ["area"],
+      "required": [
+        "area"
+      ],
       "additionalProperties": false
     },
     "WalkStart": {
@@ -1805,7 +2152,11 @@
           "$ref": "#/definitions/Pt"
         }
       },
-      "required": ["plan", "from", "towards"],
+      "required": [
+        "plan",
+        "from",
+        "towards"
+      ],
       "additionalProperties": false,
       "description": "Standing at `from`, looking towards `towards`: sheet units of `plan`"
     },
@@ -1833,11 +2184,20 @@
             },
             "position": {
               "type": "string",
-              "enum": ["inner", "middle", "outer"],
+              "enum": [
+                "inner",
+                "middle",
+                "outer"
+              ],
               "description": "where the frame sits in the wall's thickness"
             }
           },
-          "required": ["material", "colorInside", "colorOutside", "position"],
+          "required": [
+            "material",
+            "colorInside",
+            "colorOutside",
+            "position"
+          ],
           "additionalProperties": false
         },
         "glazing": {
@@ -1858,7 +2218,10 @@
                       "type": "number"
                     }
                   },
-                  "required": ["material", "overhang"],
+                  "required": [
+                    "material",
+                    "overhang"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -1875,7 +2238,9 @@
                       "$ref": "#/definitions/SillMaterial"
                     }
                   },
-                  "required": ["material"],
+                  "required": [
+                    "material"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -1884,7 +2249,10 @@
               ]
             }
           },
-          "required": ["inner", "outer"],
+          "required": [
+            "inner",
+            "outer"
+          ],
           "additionalProperties": false
         },
         "shading": {
@@ -1957,7 +2325,10 @@
               "type": "number"
             }
           },
-          "required": ["id", "version"],
+          "required": [
+            "id",
+            "version"
+          ],
           "additionalProperties": false,
           "description": "a copy of one of the author's kits: its id and the version copied (a newer one is proposed, never imposed)"
         },
@@ -1997,12 +2368,19 @@
               "type": "string"
             }
           },
-          "required": ["width", "color"],
+          "required": [
+            "width",
+            "color"
+          ],
           "additionalProperties": false
         },
         "direction": {
           "type": "number",
-          "enum": [0, 45, 90],
+          "enum": [
+            0,
+            45,
+            90
+          ],
           "description": "degrees, the pieces' length turned from the region's x (a floor: the sheet's; a wall: along it)"
         },
         "variation": {
@@ -2011,7 +2389,11 @@
         },
         "finish": {
           "type": "string",
-          "enum": ["matte", "satin", "gloss"]
+          "enum": [
+            "matte",
+            "satin",
+            "gloss"
+          ]
         },
         "product": {
           "type": "string",
@@ -2041,7 +2423,9 @@
               "type": "string"
             }
           },
-          "required": ["image"],
+          "required": [
+            "image"
+          ],
           "additionalProperties": false
         },
         {
@@ -2051,7 +2435,9 @@
               "$ref": "#/definitions/MaterialSample"
             }
           },
-          "required": ["sample"],
+          "required": [
+            "sample"
+          ],
           "additionalProperties": false
         },
         {
@@ -2061,7 +2447,9 @@
               "type": "string"
             }
           },
-          "required": ["color"],
+          "required": [
+            "color"
+          ],
           "additionalProperties": false
         }
       ],
@@ -2069,12 +2457,27 @@
     },
     "MaterialSample": {
       "type": "string",
-      "enum": ["oak", "white-oak", "bleached-oak", "grey-wood", "marble", "cement"],
+      "enum": [
+        "oak",
+        "white-oak",
+        "bleached-oak",
+        "grey-wood",
+        "marble",
+        "cement"
+      ],
       "description": "The photos of materials Blupinta offers to lay pieces of, named by how they look: each a CC0 texture of Poly Haven's (`apps/web/public/floor-samples`, where each comes from is said there)"
     },
     "LayingPattern": {
       "type": "string",
-      "enum": ["straight", "half", "third", "herringbone", "chevron", "basket", "hexagons"],
+      "enum": [
+        "straight",
+        "half",
+        "third",
+        "herringbone",
+        "chevron",
+        "basket",
+        "hexagons"
+      ],
       "description": "How a laying's pieces are set out (`laying.ts`)"
     },
     "WallTileDefinition": {
@@ -2098,7 +2501,10 @@
               "type": "number"
             }
           },
-          "required": ["id", "version"],
+          "required": [
+            "id",
+            "version"
+          ],
           "additionalProperties": false,
           "description": "a copy of one of the author's kits: its id and the version copied (a newer one is proposed, never imposed)"
         },
@@ -2138,12 +2544,19 @@
               "type": "string"
             }
           },
-          "required": ["width", "color"],
+          "required": [
+            "width",
+            "color"
+          ],
           "additionalProperties": false
         },
         "direction": {
           "type": "number",
-          "enum": [0, 45, 90],
+          "enum": [
+            0,
+            45,
+            90
+          ],
           "description": "degrees, the pieces' length turned from the region's x (a floor: the sheet's; a wall: along it)"
         },
         "variation": {
@@ -2152,14 +2565,28 @@
         },
         "finish": {
           "type": "string",
-          "enum": ["matte", "satin", "gloss"]
+          "enum": [
+            "matte",
+            "satin",
+            "gloss"
+          ]
         },
         "product": {
           "type": "string",
           "description": "the product it is, as the author writes it (\"Marazzi Treverk 10×60\"); a catalog product later"
         }
       },
-      "required": ["direction", "finish", "id", "joint", "material", "name", "pattern", "tile", "variation"],
+      "required": [
+        "direction",
+        "finish",
+        "id",
+        "joint",
+        "material",
+        "name",
+        "pattern",
+        "tile",
+        "variation"
+      ],
       "description": "Wall tiles made by the person (redesign.md §8f): their laying, as a floor's but with no kind. Kept in the home as floors are (only this home's, or the copy of one of the author's kits)"
     },
     "HouseSettings": {
@@ -2185,7 +2612,10 @@
               "$ref": "#/definitions/MeasureSources%3C(%22outer%22%7C%22inner%22)%3E"
             }
           },
-          "required": ["outer", "inner"],
+          "required": [
+            "outer",
+            "inner"
+          ],
           "additionalProperties": false,
           "description": "m: the thickness new outer and inner walls start with"
         },
@@ -2222,7 +2652,10 @@
               "$ref": "#/definitions/MeasureSources%3C(%22switchHeight%22%7C%22socketHeight%22)%3E"
             }
           },
-          "required": ["switchHeight", "socketHeight"],
+          "required": [
+            "switchHeight",
+            "socketHeight"
+          ],
           "additionalProperties": false,
           "description": "m, from the finished floor to a plate's centre: where new light switches and sockets go (`housePlates`)"
         }
@@ -2231,7 +2664,11 @@
     },
     "HouseKind": {
       "type": "string",
-      "enum": ["flat", "detached", "terraced"]
+      "enum": [
+        "flat",
+        "detached",
+        "terraced"
+      ]
     },
     "MeasureSources<(\"outer\"|\"inner\")>": {
       "type": "object",
@@ -2271,7 +2708,9 @@
           "description": "the checklist of next steps put away; it is shown again from the house's settings"
         }
       },
-      "required": ["isFinished"],
+      "required": [
+        "isFinished"
+      ],
       "additionalProperties": false
     },
     "ProductManifest": {
@@ -2321,17 +2760,20 @@
               "options": {
                 "type": "object",
                 "additionalProperties": {
-                  "type": ["string", "number", "boolean"]
+                  "$ref": "#/definitions/VariantValue"
                 }
               },
               "article": {
                 "type": "string"
               }
             },
-            "required": ["options", "article"],
+            "required": [
+              "options",
+              "article"
+            ],
             "additionalProperties": false
           },
-          "description": "option combinations the maker sells under its own article number"
+          "description": "option combinations the maker sells under its own article number (a slots option's as its slots' choices)"
         },
         "geometry": {
           "$ref": "#/definitions/GeometrySource"
@@ -2349,7 +2791,11 @@
               "type": "string"
             }
           },
-          "required": ["w", "h", "d"],
+          "required": [
+            "w",
+            "h",
+            "d"
+          ],
           "additionalProperties": false,
           "description": "width (x), height (y), depth (z) as expressions of the options, m"
         },
@@ -2370,10 +2816,19 @@
               },
               "kind": {
                 "type": "string",
-                "enum": ["light", "media", "cover", "appliance", "sensor"]
+                "enum": [
+                  "light",
+                  "media",
+                  "cover",
+                  "appliance",
+                  "sensor"
+                ]
               }
             },
-            "required": ["slot", "kind"],
+            "required": [
+              "slot",
+              "kind"
+            ],
             "additionalProperties": false
           },
           "description": "what in it a house entity can drive"
@@ -2388,7 +2843,9 @@
               }
             }
           },
-          "required": ["thumbnails"],
+          "required": [
+            "thumbnails"
+          ],
           "additionalProperties": false
         },
         "source": {
@@ -2405,10 +2862,17 @@
               },
               "kind": {
                 "type": "string",
-                "enum": ["product", "manual", "shop"]
+                "enum": [
+                  "product",
+                  "manual",
+                  "shop"
+                ]
               }
             },
-            "required": ["url", "kind"],
+            "required": [
+              "url",
+              "kind"
+            ],
             "additionalProperties": false
           }
         }
@@ -2437,13 +2901,22 @@
           "type": "string"
         }
       },
-      "required": ["it", "en"],
+      "required": [
+        "it",
+        "en"
+      ],
       "additionalProperties": false,
       "description": "App content, shared by every user: in each of the app's languages (furnishing.md F5)"
     },
     "Mount": {
       "type": "string",
-      "enum": ["floor", "wall", "ceiling", "surface", "built-in"]
+      "enum": [
+        "floor",
+        "wall",
+        "ceiling",
+        "surface",
+        "built-in"
+      ]
     },
     "OptionSpec": {
       "anyOf": [
@@ -2494,9 +2967,15 @@
                 "additionalProperties": {
                   "type": "number"
                 }
+              },
+              "allowedIf": {
+                "$ref": "#/definitions/AllowedIf"
               }
             },
-            "required": ["id", "name"],
+            "required": [
+              "id",
+              "name"
+            ],
             "additionalProperties": false
           },
           "description": "each with numbers the expressions read as `<option>.<name>` (KALLAX's `size.cols`)"
@@ -2514,7 +2993,20 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["choices", "default", "id", "kind", "name"]
+      "required": [
+        "choices",
+        "default",
+        "id",
+        "kind",
+        "name"
+      ]
+    },
+    "AllowedIf": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Condition"
+      },
+      "description": "A rule between options (furnishing.md §3, a modular system): a value is offered only while every condition holds (BESTÅ's 180 frame only in white)"
     },
     "Condition": {
       "type": "object",
@@ -2525,11 +3017,18 @@
         "in": {
           "type": "array",
           "items": {
-            "type": ["string", "number", "boolean"]
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
           }
         }
       },
-      "required": ["option", "in"],
+      "required": [
+        "option",
+        "in"
+      ],
       "additionalProperties": false,
       "description": "Shows (or allows) an option only when another holds one of some values"
     },
@@ -2548,6 +3047,13 @@
           },
           "description": "the library's materials it is sold in"
         },
+        "allowedIf": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/AllowedIf"
+          },
+          "description": "the materials sold only with some other values, by material"
+        },
         "default": {
           "type": "string"
         },
@@ -2561,7 +3067,13 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["default", "id", "kind", "materials", "name"]
+      "required": [
+        "default",
+        "id",
+        "kind",
+        "materials",
+        "name"
+      ]
     },
     "NumberOption": {
       "type": "object",
@@ -2582,7 +3094,11 @@
         },
         "unit": {
           "type": "string",
-          "enum": ["m", "count", "degrees"]
+          "enum": [
+            "m",
+            "count",
+            "degrees"
+          ]
         },
         "default": {
           "type": "number"
@@ -2597,7 +3113,16 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["default", "id", "kind", "max", "min", "name", "step", "unit"]
+      "required": [
+        "default",
+        "id",
+        "kind",
+        "max",
+        "min",
+        "name",
+        "step",
+        "unit"
+      ]
     },
     "ToggleOption": {
       "type": "object",
@@ -2620,7 +3145,12 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["default", "id", "kind", "name"]
+      "required": [
+        "default",
+        "id",
+        "kind",
+        "name"
+      ]
     },
     "ImageOption": {
       "type": "object",
@@ -2651,7 +3181,12 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["aspect", "id", "kind", "name"]
+      "required": [
+        "aspect",
+        "id",
+        "kind",
+        "name"
+      ]
     },
     "SlotsOption": {
       "type": "object",
@@ -2675,9 +3210,15 @@
               },
               "name": {
                 "$ref": "#/definitions/Translated"
+              },
+              "allowedIf": {
+                "$ref": "#/definitions/AllowedIf"
               }
             },
-            "required": ["id", "name"],
+            "required": [
+              "id",
+              "name"
+            ],
             "additionalProperties": false
           }
         },
@@ -2691,7 +3232,13 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["choices", "count", "id", "kind", "name"]
+      "required": [
+        "choices",
+        "count",
+        "id",
+        "kind",
+        "name"
+      ]
     },
     "TextOption": {
       "type": "object",
@@ -2717,7 +3264,36 @@
           "$ref": "#/definitions/Condition"
         }
       },
-      "required": ["default", "id", "kind", "maxLength", "name"]
+      "required": [
+        "default",
+        "id",
+        "kind",
+        "maxLength",
+        "name"
+      ]
+    },
+    "VariantValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      ],
+      "description": "A value a variant names for an option: a choice's or material's id, a number, yes or no, each slot's choice"
     },
     "GeometrySource": {
       "anyOf": [
@@ -2732,7 +3308,10 @@
               "type": "string"
             }
           },
-          "required": ["kind", "generator"],
+          "required": [
+            "kind",
+            "generator"
+          ],
           "additionalProperties": false
         },
         {
@@ -2746,7 +3325,9 @@
               "type": "string"
             }
           },
-          "required": ["kind"],
+          "required": [
+            "kind"
+          ],
           "additionalProperties": false
         },
         {
@@ -2766,7 +3347,10 @@
               "type": "string"
             }
           },
-          "required": ["kind", "models"],
+          "required": [
+            "kind",
+            "models"
+          ],
           "additionalProperties": false
         },
         {
@@ -2783,7 +3367,10 @@
               }
             }
           },
-          "required": ["kind", "parts"],
+          "required": [
+            "kind",
+            "parts"
+          ],
           "additionalProperties": false
         }
       ]
@@ -2799,18 +3386,31 @@
         },
         "lod": {
           "$ref": "#/definitions/ModelRef"
+        },
+        "article": {
+          "type": "string"
+        },
+        "perArticle": {
+          "type": "number"
         }
       },
-      "required": ["model"],
+      "required": [
+        "model"
+      ],
       "additionalProperties": false,
-      "description": "A model and the options that choose it; one without `when` is the fallback"
+      "description": "A model and the options that choose it; one without `when` is the fallback. A maker's component carries its article, and how many parts one article gives (STUBBARP's legs come two to a pack)"
     },
     "When": {
       "type": "object",
       "additionalProperties": {
-        "type": ["string", "number", "boolean"]
+        "type": [
+          "string",
+          "number",
+          "boolean",
+          "null"
+        ]
       },
-      "description": "Option values that must all hold: a choice's or a material's id, a number, yes or no"
+      "description": "Option values that must all hold: a choice's or a material's id, a number, yes or no; in a part made per slot, null for its slot left empty"
     },
     "ModelRef": {
       "type": "object",
@@ -2822,7 +3422,10 @@
           "type": "string"
         }
       },
-      "required": ["sha256", "file"],
+      "required": [
+        "sha256",
+        "file"
+      ],
       "additionalProperties": false,
       "description": "A model of the catalog: its bytes' sha256, and the file it is published from (`pnpm catalog:assets`)"
     },
@@ -2834,7 +3437,10 @@
           "properties": {
             "shape": {
               "type": "string",
-              "enum": ["box", "cylinder"]
+              "enum": [
+                "box",
+                "cylinder"
+              ]
             },
             "size": {
               "$ref": "#/definitions/Triple"
@@ -2850,6 +3456,18 @@
               "type": "string",
               "description": "how many, an expression; 0 leaves it out (an option switching a part off)"
             },
+            "slots": {
+              "type": "string",
+              "description": "one copy per slot of this slots option (`count` of them in each, then): in the part's `when` and its models', the option names this slot's own value; `index` names the slot's position"
+            },
+            "copy": {
+              "type": "string",
+              "description": "in a part made per slot with a count, the name each copy's number within its slot goes by"
+            },
+            "when": {
+              "$ref": "#/definitions/When",
+              "description": "the part is made only while these values hold"
+            },
             "index": {
               "type": "string",
               "description": "the name each copy's number (0, 1, …) goes by in the part's expressions"
@@ -2859,7 +3477,12 @@
               "description": "what the part is (\"drawer 1\"), for clearances and, later, animation"
             }
           },
-          "required": ["at", "material", "shape", "size"]
+          "required": [
+            "at",
+            "material",
+            "shape",
+            "size"
+          ]
         },
         {
           "type": "object",
@@ -2883,6 +3506,18 @@
               "type": "string",
               "description": "how many, an expression; 0 leaves it out (an option switching a part off)"
             },
+            "slots": {
+              "type": "string",
+              "description": "one copy per slot of this slots option (`count` of them in each, then): in the part's `when` and its models', the option names this slot's own value; `index` names the slot's position"
+            },
+            "copy": {
+              "type": "string",
+              "description": "in a part made per slot with a count, the name each copy's number within its slot goes by"
+            },
+            "when": {
+              "$ref": "#/definitions/When",
+              "description": "the part is made only while these values hold"
+            },
             "index": {
               "type": "string",
               "description": "the name each copy's number (0, 1, …) goes by in the part's expressions"
@@ -2892,7 +3527,11 @@
               "description": "what the part is (\"drawer 1\"), for clearances and, later, animation"
             }
           },
-          "required": ["at", "models", "shape"]
+          "required": [
+            "at",
+            "models",
+            "shape"
+          ]
         }
       ]
     },
@@ -2914,7 +3553,9 @@
               "type": "string"
             }
           },
-          "required": ["option"],
+          "required": [
+            "option"
+          ],
           "additionalProperties": false
         },
         {
@@ -2924,7 +3565,9 @@
               "type": "string"
             }
           },
-          "required": ["material"],
+          "required": [
+            "material"
+          ],
           "additionalProperties": false
         }
       ],
@@ -2938,7 +3581,12 @@
         },
         "side": {
           "type": "string",
-          "enum": ["front", "back", "left", "right"],
+          "enum": [
+            "front",
+            "back",
+            "left",
+            "right"
+          ],
           "description": "the side it opens out of, as the product faces: across its whole width on the front or back, its depth on a side"
         },
         "depth": {
@@ -2950,12 +3598,23 @@
           "description": "where the measure comes from: the product sheet, a measurement, a usual allowance"
         }
       },
-      "required": ["use", "side", "depth", "source"],
+      "required": [
+        "use",
+        "side",
+        "depth",
+        "source"
+      ],
       "additionalProperties": false
     },
     "ClearanceUse": {
       "type": "string",
-      "enum": ["drawers", "doors", "seat", "access", "appliance"],
+      "enum": [
+        "drawers",
+        "doors",
+        "seat",
+        "access",
+        "appliance"
+      ],
       "description": "What a clearance is kept free for, named in the editor's warnings"
     },
     "InventoryItem": {
@@ -2974,7 +3633,10 @@
               "type": "number"
             }
           },
-          "required": ["id", "version"],
+          "required": [
+            "id",
+            "version"
+          ],
           "additionalProperties": false,
           "description": "the product and the version it was placed with: a newer one is offered, never forced"
         },
@@ -3011,7 +3673,12 @@
           "type": "string"
         }
       },
-      "required": ["id", "product", "options", "placement"],
+      "required": [
+        "id",
+        "product",
+        "options",
+        "placement"
+      ],
       "additionalProperties": false
     },
     "OptionValues": {
@@ -3034,7 +3701,10 @@
         {
           "type": "array",
           "items": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         {
@@ -3076,7 +3746,10 @@
           "maxItems": 4
         }
       },
-      "required": ["file", "crop"],
+      "required": [
+        "file",
+        "crop"
+      ],
       "additionalProperties": false,
       "description": "A picture in an image option: a file of the project and the part of it shown (fractions of its size)"
     },
@@ -3099,7 +3772,12 @@
               "type": "number"
             }
           },
-          "required": ["kind", "plan", "at", "rotation"],
+          "required": [
+            "kind",
+            "plan",
+            "at",
+            "rotation"
+          ],
           "additionalProperties": false
         },
         {
@@ -3117,7 +3795,10 @@
             },
             "side": {
               "type": "string",
-              "enum": ["left", "right"]
+              "enum": [
+                "left",
+                "right"
+              ]
             },
             "along": {
               "type": "number"
@@ -3129,7 +3810,15 @@
               "type": "number"
             }
           },
-          "required": ["kind", "plan", "wall", "side", "along", "y0", "gap"],
+          "required": [
+            "kind",
+            "plan",
+            "wall",
+            "side",
+            "along",
+            "y0",
+            "gap"
+          ],
           "additionalProperties": false
         },
         {
@@ -3152,7 +3841,13 @@
               "type": "number"
             }
           },
-          "required": ["kind", "plan", "at", "rotation", "drop"],
+          "required": [
+            "kind",
+            "plan",
+            "at",
+            "rotation",
+            "drop"
+          ],
           "additionalProperties": false
         },
         {
@@ -3184,7 +3879,12 @@
               "type": "number"
             }
           },
-          "required": ["kind", "parent", "offset", "rotation"],
+          "required": [
+            "kind",
+            "parent",
+            "offset",
+            "rotation"
+          ],
           "additionalProperties": false
         }
       ]
@@ -3207,7 +3907,10 @@
           "description": "two or more pieces of the inventory"
         }
       },
-      "required": ["id", "pieces"],
+      "required": [
+        "id",
+        "pieces"
+      ],
       "additionalProperties": false
     },
     "PieceSet": {
@@ -3226,7 +3929,11 @@
           }
         }
       },
-      "required": ["id", "name", "pieces"],
+      "required": [
+        "id",
+        "name",
+        "pieces"
+      ],
       "additionalProperties": false
     },
     "SetPiece": {
@@ -3242,7 +3949,10 @@
               "type": "number"
             }
           },
-          "required": ["id", "version"],
+          "required": [
+            "id",
+            "version"
+          ],
           "additionalProperties": false
         },
         "options": {
@@ -3255,7 +3965,11 @@
           "$ref": "#/definitions/SetPlacement"
         }
       },
-      "required": ["product", "options", "placement"],
+      "required": [
+        "product",
+        "options",
+        "placement"
+      ],
       "additionalProperties": false
     },
     "SetPlacement": {
@@ -3286,7 +4000,11 @@
               "type": "number"
             }
           },
-          "required": ["kind", "at", "rotation"],
+          "required": [
+            "kind",
+            "at",
+            "rotation"
+          ],
           "additionalProperties": false
         },
         {
@@ -3318,7 +4036,12 @@
               "type": "number"
             }
           },
-          "required": ["kind", "at", "rotation", "drop"],
+          "required": [
+            "kind",
+            "at",
+            "rotation",
+            "drop"
+          ],
           "additionalProperties": false
         },
         {
@@ -3350,7 +4073,12 @@
               "type": "number"
             }
           },
-          "required": ["kind", "parent", "offset", "rotation"],
+          "required": [
+            "kind",
+            "parent",
+            "offset",
+            "rotation"
+          ],
           "additionalProperties": false
         }
       ]

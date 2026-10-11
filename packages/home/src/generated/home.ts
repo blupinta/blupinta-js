@@ -432,6 +432,20 @@ export type Mount = "floor" | "wall" | "ceiling" | "surface" | "built-in";
 export type OptionSpec =
   ChoiceOption | MaterialOption | NumberOption | ToggleOption | ImageOption | SlotsOption | TextOption;
 /**
+ * A rule between options (furnishing.md §3, a modular system): a value is offered only while every condition holds (BESTÅ's 180 frame only in white)
+ *
+ * This interface was referenced by `HomeModel`'s JSON-Schema
+ * via the `definition` "AllowedIf".
+ */
+export type AllowedIf = Condition[];
+/**
+ * A value a variant names for an option: a choice's or material's id, a number, yes or no, each slot's choice
+ *
+ * This interface was referenced by `HomeModel`'s JSON-Schema
+ * via the `definition` "VariantValue".
+ */
+export type VariantValue = string | number | boolean | (string | null)[];
+/**
  * This interface was referenced by `HomeModel`'s JSON-Schema
  * via the `definition` "GeometrySource".
  */
@@ -468,6 +482,15 @@ export type RecipePart =
        */
       count?: string;
       /**
+       * one copy per slot of this slots option (`count` of them in each, then): in the part's `when` and its models', the option names this slot's own value; `index` names the slot's position
+       */
+      slots?: string;
+      /**
+       * in a part made per slot with a count, the name each copy's number within its slot goes by
+       */
+      copy?: string;
+      when?: When1;
+      /**
        * the name each copy's number (0, 1, …) goes by in the part's expressions
        */
       index?: string;
@@ -484,6 +507,15 @@ export type RecipePart =
        * how many, an expression; 0 leaves it out (an option switching a part off)
        */
       count?: string;
+      /**
+       * one copy per slot of this slots option (`count` of them in each, then): in the part's `when` and its models', the option names this slot's own value; `index` names the slot's position
+       */
+      slots?: string;
+      /**
+       * in a part made per slot with a count, the name each copy's number within its slot goes by
+       */
+      copy?: string;
+      when?: When2;
       /**
        * the name each copy's number (0, 1, …) goes by in the part's expressions
        */
@@ -1637,11 +1669,11 @@ export interface ProductManifest {
   mount: Mount;
   options: OptionSpec[];
   /**
-   * option combinations the maker sells under its own article number
+   * option combinations the maker sells under its own article number (a slots option's as its slots' choices)
    */
   variants?: {
     options: {
-      [k: string]: string | number | boolean;
+      [k: string]: VariantValue;
     };
     article: string;
   }[];
@@ -1702,6 +1734,7 @@ export interface ChoiceOption {
     params?: {
       [k: string]: number;
     };
+    allowedIf?: AllowedIf;
   }[];
   default: string;
   id: string;
@@ -1728,6 +1761,12 @@ export interface MaterialOption {
    * the library's materials it is sold in
    */
   materials: string[];
+  /**
+   * the materials sold only with some other values, by material
+   */
+  allowedIf?: {
+    [k: string]: AllowedIf;
+  };
   default: string;
   id: string;
   name: Translated;
@@ -1791,6 +1830,7 @@ export interface SlotsOption {
   choices: {
     id: string;
     name: Translated;
+    allowedIf?: AllowedIf;
   }[];
   id: string;
   name: Translated;
@@ -1809,7 +1849,7 @@ export interface TextOption {
   visibleIf?: Condition;
 }
 /**
- * A model and the options that choose it; one without `when` is the fallback
+ * A model and the options that choose it; one without `when` is the fallback. A maker's component carries its article, and how many parts one article gives (STUBBARP's legs come two to a pack)
  *
  * This interface was referenced by `HomeModel`'s JSON-Schema
  * via the `definition` "ModelChoice".
@@ -1818,15 +1858,17 @@ export interface ModelChoice {
   when?: When;
   model: ModelRef;
   lod?: ModelRef;
+  article?: string;
+  perArticle?: number;
 }
 /**
- * Option values that must all hold: a choice's or a material's id, a number, yes or no
+ * Option values that must all hold: a choice's or a material's id, a number, yes or no; in a part made per slot, null for its slot left empty
  *
  * This interface was referenced by `HomeModel`'s JSON-Schema
  * via the `definition` "When".
  */
 export interface When {
-  [k: string]: string | number | boolean;
+  [k: string]: string | number | boolean | null;
 }
 /**
  * A model of the catalog: its bytes' sha256, and the file it is published from (`pnpm catalog:assets`)
@@ -1837,6 +1879,18 @@ export interface When {
 export interface ModelRef {
   sha256: string;
   file: string;
+}
+/**
+ * Option values that must all hold: a choice's or a material's id, a number, yes or no; in a part made per slot, null for its slot left empty
+ */
+export interface When1 {
+  [k: string]: string | number | boolean | null;
+}
+/**
+ * Option values that must all hold: a choice's or a material's id, a number, yes or no; in a part made per slot, null for its slot left empty
+ */
+export interface When2 {
+  [k: string]: string | number | boolean | null;
 }
 /**
  * This interface was referenced by `HomeModel`'s JSON-Schema
